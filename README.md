@@ -1,5 +1,8 @@
-Team Justin and Andres: Database Final Project
-==============================================
+Team Justin and Andres:
+=======================
+
+Database Final Project
+======================
 
 
 Todo:
