@@ -1,4 +1,8 @@
 Database Final Project
 ======================
 
-ANDRES DID SOMETHING HERE
+Team Justin and Andres
+----------------------
+
+Todo:
+
