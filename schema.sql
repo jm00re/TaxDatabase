@@ -1,7 +1,60 @@
+CREATE TABLE zip_code(
+	ZipCode INTEGER PRIMARY KEY AUTOINCREMENT, 
+	City TEXT,
+	State TEXT
+);
+
+CREATE TABLE insurance_company(
+	InsuranceCoID INTEGER PRIMARY KEY AUTOINCREMENT,
+	InsuranceName TEXT
+);
+
+CREATE TABLE pay_period(
+	PayPeriodID INTEGER PRIMARY KEY AUTOINCREMENT,
+	StartDate DATE,
+	EndDate DATE
+);
+
+CREATE TABLE withholding(
+	WithholdingID INTEGER PRIMARY KEY AUTOINCREMENT,
+	Description TEXT
+);
+
+CREATE TABLE fed_tax_rate(
+	FedTaxRateID INTEGER PRIMARY KEY AUTOINCREMENT,
+	Upperlimit INTEGER,
+	WithholdingID INTEGER,
+	FedTaxRate REAL,
+	FOREIGN KEY(WithholdingID) REFERENCES Withholding(WithholdingID)
+); 
+
+
+CREATE TABLE address(
+	AddressID INTEGER PRIMARY KEY AUTOINCREMENT,
+	StreetNumber INTEGER,
+	Street TEXT,
+	ZipCode INTEGER,
+	FOREIGN KEY(ZipCode) REFERENCES zip_code(ZipCode)
+);
+
+CREATE TABLE employee(
+	EmployeeID INTEGER PRIMARY KEY AUTOINCREMENT,
+	AddressID INTEGER,
+	WithholdingID INTEGER,
+	JobTitleID INTEGER,
+	FedTaxRateID INTEGER,
+	EmployeeBenefitsID INTEGER,
+	FOREIGN KEY(AddressID) REFERENCES address(AddressID),
+	FOREIGN KEY(WithholdingID) REFERENCES withholding(WithholdingID),
+	FOREIGN KEY(JobTitleID) REFERENCES job_title(JobTitleID),
+	FOREIGN KEY(FedTaxRateID) REFERENCES tax_rate(FedTaxRateID),
+	FOREIGN KEY(EmployeeBenefitsID) REFERENCES employee_benefits(EmployeeBenefitsID)
+);
+
 CREATE TABLE payroll(
-	PayrollEmpID INTEGER AUTOINCREMENT PRIMARY KEY,
-	FOREIGN KEY (EmployeeID) REFRENCES employee(EmployeeID), 
-	PayPeriod INTEGER, 
+	PayrollEmpID INTEGER PRIMARY KEY AUTOINCREMENT,
+	PayPeriodID INTEGER,
+	EmployeeID INTEGER,
 	LocalTax REAL,
 	CityTax REAL,
 	StateTax REAL,
@@ -9,95 +62,64 @@ CREATE TABLE payroll(
 	SSTax REAL,
 	MedicareTax REAL,
 	LifeInsuranceAmt REAL,
-	401kAmt REAL,
+	[401kAmt] REAL,
 	DisabilityAmt REAL,
-	HealthInsuranceAmt REAL
+	HealthInsuranceAmt REAL,
+	GrossSalary REAL,
+	FOREIGN KEY(EmployeeID) REFERENCES employee(EmployeeID), 
+	FOREIGN KEY(PayPeriodID) REFERENCES pay_period(PayPeriodID) 
 );
-
-CREATE TABLE employee(
-	EmployeeID INTEGER AUTOINCREMENT PRIMARY KEY,
-	FOREIGN KEY(AddressID) REFRENCES address(AddressID),
-	FOREIGN KEY(WithholdingID) REFRENCES withholding(WithholdingID),
-	FOREIGN KEY(JobTitleID) REFRENCES job_title(JobTitleID),
-	FOREIGN KEY(TaxRateID) REFRENCES tax_rate(TaxRateID),
-	FOREIGN KEY(EmployeeBenefitsID) REFRENCES employee_benefits(EmployeeBenefitsID)
-); 
-
-CREATE TABLE address(
-	AddressID INTEGER AUTOINCREMENT PRIMARY KEY,
-	StreetNumber INTEGER,
-	Street TEXT,
-	FOREIGN KEY(ZipCode) REFRENCES zip_code(ZipCode)
-);
-
-CREATE TABLE zip_code(
-	ZipCode INTEGER AUTOINCREMENT PRIMARY KEY, 
-	City TEXT,
-	State TEXT
-);
-
-CREATE TABLE withholding(
-	WithholdingID INTEGER AUTOINCREMENT PRIMARY KEY,
-	Description TEXT
-);
-
-CREATE TABLE fed_tax_rate(
-	FedTaxRateID INTEGER AUTOINCREMENT PRIMARY KEY,
-	FOREIGN KEY(WithholdingID) REFRENCES Withholding(WithholdingID),
-	Upperlimit INTEGER,
-	FedTaxRate REAL
-); 
 
 CREATE TABLE job_title(
-	JobTitleID INTEGER AUTOINCREMENT PRIMARY KEY,
+	JobTitleID INTEGER PRIMARY KEY AUTOINCREMENT,
 	JobTitleName TEXT,
-	JOBTitleSalary
+	JOBTitleSalary REAL
 );
 
-CREATE TABLE insurance_company(
-	InsuranceCoID INTEGER AUTOINCREMENT PRIMARY KEY,
-	InsuranceName TEXT
+CREATE TABLE [401k_plan](
+	[401kPlanID] INTEGER PRIMARY KEY AUTOINCREMENT,
+	InsuranceCoID INTEGER,
+	[401kPlanDescription] INTEGER,
+	[401kPercentOfSalary] REAL,
+	FOREIGN KEY ([InsuranceCoID]) REFERENCES insurance_company(InsuranceCoID)
 );
 
 CREATE TABLE employee_benefits(
-	EmployeeBenefitsID INTEGER AUTOINCREMENT PRIMARY KEY,
-	FOREIGN KEY(401kPlanID) REFRENCES 401k_plan(401kPlanID),
-	FOREIGN KEY(LifeInsPlanID) REFRENCES life_insurance_plan(LifeInsPlanID),
-	FOREIGN KEY(DisabilityPlanID) REFRENCES disability_plan(DisabilityPlanID),
-	FOREIGN KEY(HealthInsPlanID) REFRENCES health_insurance_plan(HealthInsPlanID)
+	EmployeeBenefitsID INTEGER PRIMARY KEY AUTOINCREMENT,
+	[401kPlanID] INTEGER,
+	DisabilityPlanID INTEGER,
+	LifeInsPlanID INTEGER,
+	HealthInsPlanID INTEGER,
+	FOREIGN KEY([401kPlanID]) REFERENCES [401k_plan]([401kPlanID]),
+	FOREIGN KEY(LifeInsPlanID) REFERENCES life_insurance_plan(LifeInsPlanID),
+	FOREIGN KEY(DisabilityPlanID) REFERENCES disability_plan(DisabilityPlanID),
+	FOREIGN KEY(HealthInsPlanID) REFERENCES health_insurance_plan(HealthInsPlanID)
 ); 
 
-CREATE TABLE 401k_plan(
-	401kPlanID INTEGER AUTOINCREMENT PRIMARY KEY,
-	FOREIGN KEY (InsuranceCoID) REFRENCES insurance_company(InsuranceCoID), 
-	401kPlanDescription INTEGER,
-	401kPercentOfSalary REAL
-);
-
 CREATE TABLE disability_plan(
-	DisabilityPlanId INTEGER AUTOINCREMENT PRIMARY KEY,
-	FOREIGN KEY (InsuranceCoID) REFRENCES insurance_company(InsuranceCoID), 
+	DisabilityPlanId INTEGER PRIMARY KEY AUTOINCREMENT,
+	InsuranceCoID INTEGER,
 	DisabilityPlanDescription TEXT,
-	CostPerMonthDisability REAL
+	CostPerMonthDisability REAL,
+	FOREIGN KEY (InsuranceCoID) REFERENCES insurance_company(InsuranceCoID)
 );
 
 CREATE TABLE life_insurance_plan(
-	LifeInsPlanID INTEGER AUTOINCREMENT PRIMARY KEY,
-	FOREIGN KEY (InsuranceCoID) REFRENCES insurance_company(InsuranceCoID), 
+	LifeInsPlanID INTEGER PRIMARY KEY AUTOINCREMENT,
+	InsuranceCoID INTEGER,
 	LifeInsDescription TEXT,
 	LifeInsAmt REAL,
-	CostPerMonthLifeIns REAL
+	CostPerMonthLifeIns REAL,
+	FOREIGN KEY (InsuranceCoID) REFERENCES insurance_company(InsuranceCoID)
 );
 
 CREATE TABLE health_insurance_plan(
-	HealthInsPlanID INTEGER AUTOINCREMENT PRIMARY KEY,
-	FOREIGN KEY (InsuranceCoID) REFRENCES insurance_company(InsuranceCoID), 
+	HealthInsPlanID INTEGER PRIMARY KEY AUTOINCREMENT,
+	InsuranceCoID INTEGER,
 	InsPlanDescription TEXT,
 	FamilyRate REAL,
 	SingleRate REAL, 
-	CostPerMonthHealthIns REAL
+	CostPerMonthHealthIns REAL,
+	FOREIGN KEY (InsuranceCoID) REFERENCES insurance_company(InsuranceCoID)
 );
-
-
-
 
