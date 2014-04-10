@@ -28,7 +28,6 @@ CREATE TABLE fed_tax_rate(
 	FOREIGN KEY(WithholdingID) REFERENCES Withholding(WithholdingID)
 ); 
 
-
 CREATE TABLE address(
 	AddressID INTEGER PRIMARY KEY AUTOINCREMENT,
 	StreetNumber INTEGER,
