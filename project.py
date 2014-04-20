@@ -25,22 +25,43 @@ def close_db(error):
         g.sqlite_db.close()
 
 @app.route("/", methods=['GET'])
-def show():
+def select():
 	db = get_db()
-	bottom = request.args.get('min','')
-	top = request.args.get('max','')
-	cur = db.execute('select * from first where salary between ? and ?', [bottom, top])
-	entries = cur.fetchall()
-	return render_template("display.html", entries=entries)
+	#bottom = request.args.get('min','')
+	#top = request.args.get('max','')
+	#cur = db.execute('select * from first where salary between ? and ?', [bottom, top])
+	#entries = cur.fetchall()
+	return render_template("display.html")
 
-@app.route('/add', methods=['POST'])
-def update():
-	db = get_db()
-	n = request.form['name']
-	s = int(request.form['salary'])
-	db.execute('insert into first (NAME, SALARY) values (?, ?)', [n, s])
-	db.commit()
-	return redirect(url_for('show'))
+@app.route("/add_employee", methods=['POST'])
+def add_employee():
+	return
+
+@app.route("/update_employee", methods=['POST'])
+def update_employee():
+	return
+
+@app.route("/view_employee", methods=['GET'])
+def view_employee():
+	return
+
+@app.route("/employee_payroll", methods=['POST'])
+def employee_payroll():
+	return
+
+@app.route("/add_insurance", methods=['POST'])
+def add_insurance():
+	return
+
+
+#@app.route('/add', methods=['POST'])
+#def update():
+#	db = get_db()
+#	n = request.form['name']
+#	s = int(request.form['salary'])
+#	db.execute('insert into first (NAME, SALARY) values (?, ?)', [n, s])
+#	db.commit()
+#	return redirect(url_for('show'))
 
 if __name__ == "__main__":
     app.run(debug=True)

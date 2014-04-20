@@ -1,8 +1,8 @@
 <!doctype html>
-<title>Fuckity Fuck</title>
+<title>Title Here</title>
 
 <h1>INSERT EMPLOYEE</h1>
-<form action="{{ url_for('update') }}" method=post class=add-entry>
+<form action="{{ url_for('add_employee') }}" method=post class=add-entry>
       <dl>
         <dt>First Name:
         <dd><input type=text size=30 name=Fname>
@@ -82,22 +82,4 @@
 		<dd><input type=text name="fedRate">
         <dd><input type=submit value=Submit>
       </dl>
-    </form>
-
-<h1>SEARCH FOR EMPLOYEE BY SALARY</h1>
-<form action"{{ url_for('show') }}" method=GET>
-	<dl>
-		<dt>MIN:
-		<dd><input type=number size=10 name=min>
-		<dt>MAX:
-		<dd><input type=number size=10 name=max>
-		<dd><input type=submit value=Submit>
-	</dl>
 </form>
-
-{% for entry in entries %}
-	<h2>{{ entry.ID }}</h2>
-	<h2>{{ entry.NAME }}</h2>
-	<h2>{{ entry.SALARY }}</h2>
-	
-{% endfor %}
