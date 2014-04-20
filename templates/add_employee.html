@@ -5,9 +5,9 @@
 <form action="{{ url_for('add_employee') }}" method=post class=add-entry>
       <dl>
         <dt>First Name:
-        <dd><input type=text size=30 name=Fname>
+        <dd><input type=text size=30 name=FirstName>
 		<dt>Last Name:
-        <dd><input type=text size=30 name=Fname>
+        <dd><input type=text size=30 name=LastName>
         <dt>Address:
         <dd><input type=number size=30 name=Address>
 		<dt>City:
@@ -72,14 +72,14 @@
 		<dt>Salary:
         <dd><input type=number size=10 name=Salary>
 		<dt>
-		<dd><select name="benefits">
-				<option value="" selected="selected">Select a Benefit Plan</option>
+		<dt>Benefits:
+		<dd><select name="Benefits">
 				<option value="1">1</option>
 			</select>
-		<dt>Job Tital:
-		<dd><input type=text size=30 name=jTitle>
+		<dt>Job Title:
+		<dd><input type=text size=30 name=JobTitle>
 		<dt>Federal Tax Rate
-		<dd><input type=text name="fedRate">
+		<dd><input type=text name="FedTaxRate">
         <dd><input type=submit value=Submit>
       </dl>
 </form>

@@ -35,22 +35,38 @@ def select():
 
 @app.route("/add_employee", methods=['POST','GET'])
 def add_employee():
+	if request.method == 'POST':
+		FirstName = str(request.form['FirstName'])
+		LastName = str(request.form['LastName'])
+		Address = str(request.form['Address'])
+		City = str(request.form['City'])
+		State = str(request.form['State'])
+		ZipCode = int(request.form['ZipCode'])
+		City = str(request.form['City'])
+		Salary = int(request.form['Salary'])
+		Benefits = str(request.form['Benefits'])
+		JobTitle = str(request.form['JobTitle'])
+		FedTaxRate = float(request.form['FedTaxRate'])
 	return render_template("add_employee.html")
 
-@app.route("/update_employee", methods=['POST'])
+@app.route("/update_employee", methods=['POST', 'GET'])
 def update_employee():
 	return
 
-@app.route("/view_employee", methods=['GET'])
+@app.route("/view_employee", methods=['GET', 'POST'])
 def view_employee():
 	return
 
-@app.route("/employee_payroll", methods=['POST'])
+@app.route("/employee_payroll", methods=['POST', 'GET'])
 def employee_payroll():
 	return
 
-@app.route("/add_insurance", methods=['POST'])
+@app.route("/add_insurance", methods=['POST', 'GET'])
 def add_insurance():
+	return
+
+@app.route("/generate_w2", methods=['POST', 'GET'])
+def generate_w2():
 	return
 
 #@app.route('/add', methods=['POST'])
