@@ -31,11 +31,11 @@ def select():
 	#top = request.args.get('max','')
 	#cur = db.execute('select * from first where salary between ? and ?', [bottom, top])
 	#entries = cur.fetchall()
-	return render_template("display.html")
+	return render_template("select.html")
 
-@app.route("/add_employee", methods=['POST'])
+@app.route("/add_employee", methods=['POST','GET'])
 def add_employee():
-	return
+	return render_template("add_employee.html")
 
 @app.route("/update_employee", methods=['POST'])
 def update_employee():
@@ -52,7 +52,6 @@ def employee_payroll():
 @app.route("/add_insurance", methods=['POST'])
 def add_insurance():
 	return
-
 
 #@app.route('/add', methods=['POST'])
 #def update():

@@ -1,3 +1,5 @@
+PRAGMA foreign_keys = ON; 
+
 CREATE TABLE zip_code(
 	ZipCode INTEGER PRIMARY KEY AUTOINCREMENT, 
 	City TEXT,
