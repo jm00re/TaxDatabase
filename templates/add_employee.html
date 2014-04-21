@@ -69,15 +69,16 @@
 			</select>
 		<dt>Zip Code:
         <dd><input type=text size=5 name=ZipCode>
-		<dt>Salary:
-        <dd><input type=number size=10 name=Salary>
-		<dt>
 		<dt>Benefits:
 		<dd><select name="Benefits">
 				<option value="1">1</option>
 			</select>
 		<dt>Job Title:
-		<dd><input type=text size=30 name=JobTitle>
+		<dd><select name=JobTitle>
+				{% for title in titles %}
+					<option value="{{ title.JobTitleID }}">{{ title.JobTitleName }} </option>
+				{% endfor %}
+			</select>
 		<dt>Federal Tax Rate
 		<dd><input type=text name="FedTaxRate">
         <dd><input type=submit value=Submit>

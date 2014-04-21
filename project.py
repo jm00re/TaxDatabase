@@ -45,7 +45,6 @@ def add_employee():
 		State = str(request.form['State'])
 		ZipCode = int(request.form['ZipCode'])
 		City = str(request.form['City'])
-		Salary = int(request.form['Salary'])
 		Benefits = str(request.form['Benefits'])
 		JobTitle = str(request.form['JobTitle'])
 		FedTaxRate = float(request.form['FedTaxRate'])
@@ -53,13 +52,16 @@ def add_employee():
 		db.execute('INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)', [Address, City, State, ZipCode])
 		db.commit()
 		AddressID = db.execute('select last_insert_rowid();').fetchone()[0]
-		
-#	db.execute('insert into first (NAME, SALARY) values (?, ?)', [n, s])
-	return render_template("add_employee.html")
+	titles = db.execute('select * from job_title').fetchall()
+	return render_template("add_employee.html", titles=titles)
 
 #Employee Stuff
 @app.route("/update_employee", methods=['POST', 'GET'])
 def update_employee():
+	return
+
+@app.route("/update_employee_benefits", methods=['POST', 'GET'])
+def update_employee_benefits():
 	return
 
 @app.route("/view_employee", methods=['GET', 'POST'])
@@ -72,7 +74,7 @@ def add_job_title():
 	if request.method == 'POST':
 		Title = str(request.form['Title'])
 		Salary = int(request.form['Salary'])
-		db.execute('insert into job_title (job_title, salary) values (?, ?)',[Title, Salary])
+		db.execute('insert into job_title (JobTitleName, JobTitleSalary) values (?, ?)',[Title, Salary])
 		db.commit()
 	return render_template("add_job_title.html")
 
