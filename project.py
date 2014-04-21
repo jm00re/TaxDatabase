@@ -44,14 +44,14 @@ def add_employee():
 		City = str(request.form['City'])
 		State = str(request.form['State'])
 		ZipCode = int(request.form['ZipCode'])
-		City = str(request.form['City'])
-		Benefits = str(request.form['Benefits'])
-		JobTitle = str(request.form['JobTitle'])
+		#Benefits = str(request.form['Benefits'])
+		JobTitleID = int(request.form['JobTitle'])
 		FedTaxRate = float(request.form['FedTaxRate'])
 		#Insert Address
 		db.execute('INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)', [Address, City, State, ZipCode])
 		db.commit()
 		AddressID = db.execute('select last_insert_rowid();').fetchone()[0]
+		#db.execute('INSERT INTO employee (AddressID, JobTitleID, FedTaxRate) VALUES (?, ?, ?)', 
 	titles = db.execute('select * from job_title').fetchall()
 	return render_template("add_employee.html", titles=titles)
 
@@ -94,7 +94,10 @@ def add_life_insurance():
 		
 		#Insert Company First Then the rest of the Info
 		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
-		db.commit()		
+		db.commit()	
+		insuranceID = db.execute9('select last_insert_rowid();').fetchone()[0]
+		db.execute('INSERT INTO life_insurance_plan (InsuranceCoID,LifeInsDescription,LifeInsAmt,CostPerMonthLifeIns) values (?,?,?,?)',[insuranceID, Desc, Amt, pMonth])
+		db.commit()
 	return render_template("add_life_insurance.html")
 
 @app.route("/add_health_insurance", methods=['POST', 'GET'])
