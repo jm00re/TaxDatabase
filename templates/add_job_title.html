@@ -1,0 +1,13 @@
+<!doctype html>
+<title>Add Job Title</title>
+
+<h1>Add Job Title</h1>
+<form action="{{ url_for('add_job_title') }}" method=post class=add-entry>
+      <dl>
+        <dt>Job Title:
+        <dd><input type=text size=30 name=Title>
+		<dt>Salary:
+        <dd><input type=number size=30 name=Salary>
+        <dd><input type=submit value=Submit>
+      </dl>
+</form>

@@ -1,5 +1,11 @@
 PRAGMA foreign_keys = ON; 
 
+CREATE TABLE zip_code(
+	ZipCode INTEGER PRIMARY KEY AUTOINCREMENT, 
+	City TEXT,
+	State TEXT
+);
+
 CREATE TABLE insurance_company(
 	InsuranceCoID INTEGER PRIMARY KEY AUTOINCREMENT,
 	InsuranceName TEXT
@@ -26,10 +32,10 @@ CREATE TABLE fed_tax_rate(
 
 CREATE TABLE address(
 	AddressID INTEGER PRIMARY KEY AUTOINCREMENT,
+	StreetNumber INTEGER,
 	Street TEXT,
-	City TEXT,
-	State TEXT,
-	ZipCode TEXT
+	ZipCode INTEGER,
+	FOREIGN KEY(ZipCode) REFERENCES zip_code(ZipCode)
 );
 
 CREATE TABLE employee(
@@ -39,7 +45,7 @@ CREATE TABLE employee(
 	FedTaxRateID INTEGER,
 	EmployeeBenefitsID INTEGER,
 	FOREIGN KEY(AddressID) REFERENCES address(AddressID),
-	-- FOREIGN KEY(WithholdingID) REFERENCES withholding(WithholdingID),
+	FOREIGN KEY(WithholdingID) REFERENCES withholding(WithholdingID),
 	FOREIGN KEY(JobTitleID) REFERENCES job_title(JobTitleID),
 	FOREIGN KEY(FedTaxRateID) REFERENCES tax_rate(FedTaxRateID),
 	FOREIGN KEY(EmployeeBenefitsID) REFERENCES employee_benefits(EmployeeBenefitsID)

@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 def connect_db():
     """Connects to the specific database."""
-    rv = sqlite3.connect('test.db')
+    rv = sqlite3.connect('tax.db')
     rv.row_factory = sqlite3.Row
     return rv
 
@@ -35,7 +35,9 @@ def select():
 
 @app.route("/add_employee", methods=['POST','GET'])
 def add_employee():
+	db = get_db()
 	if request.method == 'POST':
+		#Gather all Parameters
 		FirstName = str(request.form['FirstName'])
 		LastName = str(request.form['LastName'])
 		Address = str(request.form['Address'])
@@ -47,6 +49,12 @@ def add_employee():
 		Benefits = str(request.form['Benefits'])
 		JobTitle = str(request.form['JobTitle'])
 		FedTaxRate = float(request.form['FedTaxRate'])
+		#Insert Address
+		db.execute('INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)', [Address, City, State, ZipCode])
+		db.commit()
+		AddressID = db.execute('select last_insert_rowid();').fetchone()[0]
+		
+#	db.execute('insert into first (NAME, SALARY) values (?, ?)', [n, s])
 	return render_template("add_employee.html")
 
 #Employee Stuff
@@ -60,7 +68,13 @@ def view_employee():
 
 @app.route("/add_job_title", methods=['POST', 'GET'])
 def add_job_title():
-	return
+	db = get_db()
+	if request.method == 'POST':
+		Title = str(request.form['Title'])
+		Salary = int(request.form['Salary'])
+		db.execute('insert into job_title (job_title, salary) values (?, ?)',[Title, Salary])
+		db.commit()
+	return render_template("add_job_title.html")
 
 @app.route("/employee_payroll", methods=['POST', 'GET'])
 def employee_payroll():
