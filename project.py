@@ -101,7 +101,6 @@ def add_life_insurance():
 		Desc = str(request.form['Description']
 		Amt = str(request.form['Amount']
 		pMonth = str(request.form['PerMonth']
-		
 		#Insert Company First Then the rest of the Info
 		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
 		db.commit()	
