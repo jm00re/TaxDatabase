@@ -47,11 +47,21 @@ def add_employee():
 		#Benefits = str(request.form['Benefits'])
 		JobTitleID = int(request.form['JobTitle'])
 		FedTaxRate = float(request.form['FedTaxRate'])
+		Upperlimit = int(request.form['Upperlimit'])
+		Withholding = str(request.form['Withholding'])
 		#Insert Address
 		db.execute('INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)', [Address, City, State, ZipCode])
 		db.commit()
 		AddressID = db.execute('select last_insert_rowid();').fetchone()[0]
-		#db.execute('INSERT INTO employee (AddressID, JobTitleID, FedTaxRate) VALUES (?, ?, ?)', 
+		#Insert Tax Witholding
+		db.execute('insert into withholding (Description) values (?)',[Withholding])
+		db.commit()
+		WithholdingID = db.execute('select last_insert_rowid();').fetchone()[0]
+		#Insert Fed Tax
+		db.execute('insert into fed_tax_rate (FedTaxRate, Upperlimit, WitholdingID values (?,?,?)', [FedTaxRate, Upperlimit, WitholdingID])
+		db.commit()
+		FedTaxRateID = db.execute('select last_insert_rowid();').fetchone()[0]
+		db.execute('INSERT INTO employee (AddressID, JobTitleID, FedTaxRateID) VALUES (?, ?, ?)', [AddressID, JobTitleID, FedTaxRateID])
 	titles = db.execute('select * from job_title').fetchall()
 	return render_template("add_employee.html", titles=titles)
 
