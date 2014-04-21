@@ -58,7 +58,7 @@ def add_employee():
 #Employee Stuff
 @app.route("/update_employee", methods=['POST', 'GET'])
 def update_employee():
-	return
+	return 
 
 @app.route("/update_employee_benefits", methods=['POST', 'GET'])
 def update_employee_benefits():
