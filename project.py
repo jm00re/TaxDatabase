@@ -44,14 +44,14 @@ def add_employee():
 		City = str(request.form['City'])
 		State = str(request.form['State'])
 		ZipCode = int(request.form['ZipCode'])
-		City = str(request.form['City'])
-		Benefits = str(request.form['Benefits'])
-		JobTitle = str(request.form['JobTitle'])
+		#Benefits = str(request.form['Benefits'])
+		JobTitleID = int(request.form['JobTitle'])
 		FedTaxRate = float(request.form['FedTaxRate'])
 		#Insert Address
 		db.execute('INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)', [Address, City, State, ZipCode])
 		db.commit()
 		AddressID = db.execute('select last_insert_rowid();').fetchone()[0]
+		#db.execute('INSERT INTO employee (AddressID, JobTitleID, FedTaxRate) VALUES (?, ?, ?)', 
 	titles = db.execute('select * from job_title').fetchall()
 	return render_template("add_employee.html", titles=titles)
 
