@@ -49,6 +49,7 @@ def add_employee():
 		FedTaxRate = float(request.form['FedTaxRate'])
 	return render_template("add_employee.html")
 
+#Employee Stuff
 @app.route("/update_employee", methods=['POST', 'GET'])
 def update_employee():
 	return
@@ -57,12 +58,29 @@ def update_employee():
 def view_employee():
 	return
 
+@app.route("/add_job_title", methods=['POST', 'GET'])
+def add_job_title():
+	return
+
 @app.route("/employee_payroll", methods=['POST', 'GET'])
 def employee_payroll():
 	return
 
-@app.route("/add_insurance", methods=['POST', 'GET'])
-def add_insurance():
+#Insurance Stuff
+@app.route("/add_life_insurance", methods=['POST', 'GET'])
+def add_life_insurance():
+	return
+
+@app.route("/add_health_insurance", methods=['POST', 'GET'])
+def add_health_insurance():
+	return
+
+@app.route("/add_disability_plan", methods=['POST', 'GET'])
+def add_disability_plan():
+	return
+
+@app.route("/add_401k_plan", methods=['POST', 'GET'])
+def add_401k_plan():
 	return
 
 @app.route("/generate_w2", methods=['POST', 'GET'])

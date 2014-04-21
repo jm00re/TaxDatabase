@@ -1,8 +1,14 @@
 <h1>Select an Action</h1>
+<h2>Employee Actions</h2>
 <a href="{{ url_for('add_employee') }}">Add Employee</a><br>
 <a href="{{ url_for('update_employee') }}">Update Employee</a><br>
 <a href="{{ url_for('view_employee') }}">View Employee</a><br>
+<a href="{{ url_for('add_job_title') }}">Add Job Title</a><br>
 <a href="{{ url_for('employee_payroll') }}">Employee Payroll</a><br>
-<a href="{{ url_for('add_insurance') }}">Add Insurance</a><br>
 <a href="{{ url_for('generate_w2') }}">Generate W2</a><br>
+<h2>Insurance Actions</h2>
+<a href="{{ url_for('add_life_insurance') }}">Add Life Insurance Plan</a><br>
+<a href="{{ url_for('add_health_insurance') }}">Add Health Insurance Plan</a><br>
+<a href="{{ url_for('add_disability_plan') }}">Add Disability Plan</a><br>
+<a href="{{ url_for('add_401k_plan') }}">Add 401k Plan</a><br>
 
