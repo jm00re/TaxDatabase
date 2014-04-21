@@ -80,12 +80,22 @@ def add_job_title():
 
 @app.route("/employee_payroll", methods=['POST', 'GET'])
 def employee_payroll():
-	return
+	return 
 
 #Insurance Stuff
 @app.route("/add_life_insurance", methods=['POST', 'GET'])
 def add_life_insurance():
-	return
+	db = get_db()
+	if request.method == 'POST':
+		Name = str(request.form['Name']
+		Desc = str(request.form['Description']
+		Amt = str(request.form['Amount']
+		pMonth = str(request.form['PerMonth']
+		
+		#Insert Company First Then the rest of the Info
+		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
+		db.commit()		
+	return render_template("add_life_insurance.html")
 
 @app.route("/add_health_insurance", methods=['POST', 'GET'])
 def add_health_insurance():
