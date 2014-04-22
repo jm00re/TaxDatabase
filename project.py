@@ -87,10 +87,10 @@ def employee_payroll():
 def add_life_insurance():
 	db = get_db()
 	if request.method == 'POST':
-		Name = str(request.form['Name']
-		Desc = str(request.form['Description']
-		Amt = str(request.form['Amount']
-		pMonth = str(request.form['PerMonth']
+		Name = str(request.form['Name'])
+		Desc = str(request.form['Description'])
+		Amt = str(request.form['Amount'])
+		pMonth = float(request.form['PerMonth'])
 		
 		#Insert Company First Then the rest of the Info
 		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
@@ -106,10 +106,34 @@ def add_health_insurance():
 
 @app.route("/add_disability_plan", methods=['POST', 'GET'])
 def add_disability_plan():
-	return
+	db = get_db()
+	if request.method == 'POST':
+		Name = str(request.form['Name'])
+		Desc = str(request.form['Description'])
+		pMonth = float(request.form['PerMonth'])
+		
+		#Insert Company first
+		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
+		db.commit()
+		insuranceID = db.execute9('select last_insert_rowid();').fetchone()[0]
+		db.execute('INSERT INTO disability_plan (DisabilityPlanDescription, CostPerMonthDisability) values (?,?)',[Desc,pMonth])
+		db.commit()
+	return render_template("add_disability_plan.html")
 
 @app.route("/add_401k_plan", methods=['POST', 'GET'])
 def add_401k_plan():
+	db = get_db()
+	if request.method == 'POST':
+		Name = str(request.form['Name'])
+		Desc = str(request.form['Description'])
+		pSalary = float(request.form['Percent'])
+		
+		#Insert Company first
+		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
+		db.commit()
+		insuranceID = db.execute9('select last_insert_rowid();').fetchone()[0]
+		db.execute('INSERT INTO [401k_plan] ([401kPlanDescription],[401kPercentOfSalary]) values (?,?)',[Desc,pSalary])
+		db.commit()
 	return
 
 @app.route("/generate_w2", methods=['POST', 'GET'])
