@@ -1,0 +1,17 @@
+<!doctype html>
+<title>Add 401k</title>
+
+<h1>Add 401k plan</h1>
+<form action="{{ url_for('add_401k_plan') }}" method=post class=add-entry>
+      <dl>
+        <dt>Insurance Company Name:
+        <dd><input type=text size=30 name=Name>
+		<dt>401k Plan Description:
+        <dd><textarea rows="3" cols="50" name=Description>Insert 401k plan description here.</textarea>
+		<dt>401k % of Salary:
+        <dd><input type=text size=15 name=Percent>
+		
+        <dd><input type=submit value=Submit>
+      </dl>
+</form>
+</html>

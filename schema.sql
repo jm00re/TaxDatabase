@@ -73,7 +73,7 @@ CREATE TABLE job_title(
 CREATE TABLE [401k_plan](
 	[401kPlanID] INTEGER PRIMARY KEY AUTOINCREMENT,
 	InsuranceCoID INTEGER,
-	[401kPlanDescription] INTEGER,
+	[401kPlanDescription] TEXT,
 	[401kPercentOfSalary] REAL,
 	FOREIGN KEY ([InsuranceCoID]) REFERENCES insurance_company(InsuranceCoID)
 );
