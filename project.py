@@ -62,6 +62,9 @@ def add_employee():
 		db.commit()
 		FedTaxRateID = db.execute('select last_insert_rowid();').fetchone()[0]
 		db.execute('INSERT INTO employee (AddressID, JobTitleID, FedTaxRateID) VALUES (?, ?, ?)', [AddressID, JobTitleID, FedTaxRateID])
+		#Add Employee
+		db.execute('insert into employee (AddressID, JobTitleID, FedTaxRateID) values (?, ?, ?)', [AddressID, JobTitleID, FedTaxRateID])
+		db.commit()
 	titles = db.execute('select * from job_title').fetchall()
 	return render_template("add_employee.html", titles=titles)
 
