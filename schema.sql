@@ -84,6 +84,7 @@ CREATE TABLE employee_benefits(
 	DisabilityPlanID INTEGER,
 	LifeInsPlanID INTEGER,
 	HealthInsPlanID INTEGER,
+	FillingStatus TEXT,
 	FOREIGN KEY([401kPlanID]) REFERENCES [401k_plan]([401kPlanID]),
 	FOREIGN KEY(LifeInsPlanID) REFERENCES life_insurance_plan(LifeInsPlanID),
 	FOREIGN KEY(DisabilityPlanID) REFERENCES disability_plan(DisabilityPlanID),
