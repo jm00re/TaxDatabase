@@ -75,20 +75,43 @@
 					<option value="{{ title.JobTitleID }}">{{ title.JobTitleName }} </option>
 				{% endfor %}
 			</select>
-		<dt>Filing Status
+		<dt>Filing Status:
 		<dd><select name=Status>
-			<option value='S'>S</option>
-			<option value='HH'>HH</option>
-			<option value='M'>M</option> 
-		<dd>Health Insurance:
-		<dd>Life Insurance:
-		<dd>Disability Insurance:
-		<dd>401k Plan:
-		<dt>Federal Tax Rate
+				<option value='S'>S</option>
+				<option value='HH'>HH</option>
+				<option value='M'>M</option> 
+			</select>
+		<dt>Health Insurance:
+		<dd><select name=HealthIns>
+				{% for HealthIns in HealthInsurance %}
+					<option value="{{ HealthIns.HealthInsPlanID }}">{{ HealthIns.HealthInsPlanID }} </option>
+				{% endfor %}
+			</select>
+		<dt>Life Insurance:
+		<dd><select name=LifeIns>
+				{% for LifeIns in LifeInsurance %}
+					<option value="{{ LifeIns.LifeInsPlanID }}">{{ LifeIns.LifeInsPlanID }} </option>
+				{% endfor %}
+			</select>
+		<dt>Disability Insurance:
+		<dd><select name=DisIns>
+				{% for DisIns in DisInsurance %}
+					<option value="{{DisIns.DisabilityPlanID }}">{{ DisIns.DisabilityPlanID }} </option>
+				{% endfor %}
+			</select>
+		<dt>401k Plan:
+		<dd><select name=401kPlan>
+				{% for plan in plans %}
+				<!-- Broken here 
+					<option value="{{plan[0]}}">{{ plan[0] }} </option>
+!-->
+				{% endfor %}
+			</select>
+		<dt>Federal Tax Rate:
 		<dd><input type=text name="FedTaxRate">
 		<dt>Federal Tax Upperlimit:
 		<dd><input type=text name="Upperlimit">
-		<dt>Federal Tax Witholding Description
+		<dt>Federal Tax Witholding Description:
 		<dd><input type=text name="Withholding">
         <dd><input type=submit value=Submit>
       </dl>

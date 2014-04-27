@@ -58,7 +58,7 @@ def add_employee():
 		db.commit()
 		WithholdingID = db.execute('select last_insert_rowid();').fetchone()[0]
 		#Insert Fed Tax
-		db.execute('insert into fed_tax_rate (FedTaxRate, Upperlimit, WitholdingID values (?,?,?)', [FedTaxRate, Upperlimit, WitholdingID])
+		db.execute('insert into fed_tax_rate (FedTaxRate, Upperlimit, WithholdingID) VALUES (?,?,?)', [FedTaxRate, Upperlimit, WithholdingID])
 		db.commit()
 		FedTaxRateID = db.execute('select last_insert_rowid();').fetchone()[0]
 		db.execute('INSERT INTO employee (AddressID, JobTitleID, FedTaxRateID) VALUES (?, ?, ?)', [AddressID, JobTitleID, FedTaxRateID])
@@ -66,7 +66,11 @@ def add_employee():
 		db.execute('insert into employee (AddressID, JobTitleID, FedTaxRateID) values (?, ?, ?)', [AddressID, JobTitleID, FedTaxRateID])
 		db.commit()
 	titles = db.execute('select * from job_title').fetchall()
-	return render_template("add_employee.html", titles=titles)
+	plan = db.execute('select * from [401k_plan]').fetchall()
+	life = db.execute('select * from life_insurance_plan').fetchall()
+	health = db.execute('select * from health_insurance_plan').fetchall()
+	dis = db.execute('select * from disability_plan').fetchall()
+	return render_template("add_employee.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis) 
 
 #Employee Stuff
 @app.route("/update_employee", methods=['POST', 'GET'])
@@ -105,9 +109,9 @@ def add_life_insurance():
 		Amt = str(request.form['Amount'])
 		pMonth = float(request.form['PerMonth'])
 		#Insert Company First Then the rest of the Info
-		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
+		db.execute('INSERT INTO insurance_company (InsuranceName) values (?)',[Name])
 		db.commit()	
-		insuranceID = db.execute9('select last_insert_rowid();').fetchone()[0]
+		insuranceID = db.execute('select last_insert_rowid();').fetchone()[0]
 		db.execute('INSERT INTO life_insurance_plan (InsuranceCoID,LifeInsDescription,LifeInsAmt,CostPerMonthLifeIns) values (?,?,?,?)',[insuranceID, Desc, Amt, pMonth])
 		db.commit()
 	return render_template("add_life_insurance.html")
@@ -125,9 +129,9 @@ def add_disability_plan():
 		pMonth = float(request.form['PerMonth'])
 		
 		#Insert Company first
-		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
+		db.execute('INSERT INTO insurance_company (InsuranceName) values (?)',[Name])
 		db.commit()
-		insuranceID = db.execute9('select last_insert_rowid();').fetchone()[0]
+		insuranceID = db.execute('select last_insert_rowid();').fetchone()[0]
 		db.execute('INSERT INTO disability_plan (DisabilityPlanDescription, CostPerMonthDisability) values (?,?)',[Desc,pMonth])
 		db.commit()
 	return render_template("add_disability_plan.html")
@@ -141,12 +145,12 @@ def add_401k_plan():
 		pSalary = float(request.form['Percent'])
 		
 		#Insert Company first
-		db.execute('INSERT INTO insurance_company (Name) values (?)',[Name])
+		db.execute('INSERT INTO insurance_company (InsuranceName) values (?)',[Name])
 		db.commit()
-		insuranceID = db.execute9('select last_insert_rowid();').fetchone()[0]
+		insuranceID = db.execute('select last_insert_rowid();').fetchone()[0]
 		db.execute('INSERT INTO [401k_plan] ([401kPlanDescription],[401kPercentOfSalary]) values (?,?)',[Desc,pSalary])
 		db.commit()
-	return
+	return render_template("add_401k_plan.html")
 
 @app.route("/generate_w2", methods=['POST', 'GET'])
 def generate_w2():
