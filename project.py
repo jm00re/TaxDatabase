@@ -50,22 +50,36 @@ def add_employee():
 		Upperlimit = int(request.form['Upperlimit'])
 		Withholding = str(request.form['Withholding'])
 		#Insert Address
-		db.execute('INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)', [Address, City, State, ZipCode])
+		add_addres = 'INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)'
+		db.execute(add_addres, [Address, City, State, ZipCode])
 		db.commit()
-		AddressID = db.execute('select last_insert_rowid();').fetchone()[0]
+		AddressID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
 		#Insert Tax Witholding
-		db.execute('insert into withholding (Description) values (?)',[Withholding])
+		db.execute('INSERT INTO Withholding (Description) VALUES (?)',[Withholding])
 		db.commit()
-		WithholdingID = db.execute('select last_insert_rowid();').fetchone()[0]
+		WithholdingID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
 		#Insert Fed Tax
-		db.execute('insert into fed_tax_rate (FedTaxRate, Upperlimit, WithholdingID) VALUES (?,?,?)', [FedTaxRate, Upperlimit, WithholdingID])
+		add_fed = 'INSERT INTO fed_tax_rate (FedTaxRate, Upperlimit, WithholdingID) VALUES (?,?,?)'
+		db.execute(add_fed, [FedTaxRate, Upperlimit, WithholdingID])
 		db.commit()
-		FedTaxRateID = db.execute('select last_insert_rowid();').fetchone()[0]
-	   #Add Employee
-		db.execute('INSERT INTO employee (FirstName, LastName, AddressID, JobTitleID, FedTaxRateID) values (?, ?, ?, ?, ?)', [FirstName, LastName, AddressID, JobTitleID, FedTaxRateID])
+		FedTaxRateID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
+		#Add Employee Benefits
+		PlanID = str(request.form['401kPlan'])
+		DisIns = str(request.form['DisIns'])
+		LifeIns = str(request.form['LifeIns'])
+		HealthIns = str(request.form['HealthIns'])
+		Status = str(request.form['Status'])
+		empben_qry = "INSERT INTO employee_benefits ([401kPlanID], DisabilityPlanID, LifeInsPlanID, HealthInsPlanID, FilingStatus) VALUES (?, ?, ?, ?, ?)"
+		db.execute(empben_qry, [PlanID, DisIns, LifeIns, HealthIns, Status])
+		db.commit()
+		EmployeeBenefitsID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
+	    #Add Employee
+		emp_qry = 'INSERT INTO employee (FirstName, LastName, AddressID, JobTitleID, FedTaxRateID, EmployeeBenefitsID) values (?, ?, ?, ?, ?, ?)'
+		db.execute(emp_qry, [FirstName, LastName, AddressID, JobTitleID, FedTaxRateID, EmployeeBenefitsID])
 		db.commit()
 	titles = db.execute('select * from job_title').fetchall()
 	plan = db.execute('select * from [401k_plan]').fetchall()
+	print plan
 	life = db.execute('select * from life_insurance_plan').fetchall()
 	health = db.execute('select * from health_insurance_plan').fetchall()
 	dis = db.execute('select * from disability_plan').fetchall()
@@ -94,21 +108,41 @@ def view_employee():
 			JobTitleID = emp[4]
 			FedTaxRateID = emp[5]
 			BenefitsID = emp[6]
-			print AddressID
-			print JobTitleID
-			print FedTaxRateID
-			print BenefitsID
+			print emp[1]
+			#print AddressID
+			#print JobTitleID
+			#print FedTaxRateID
+			#print BenefitsID
 			address_qry = 'SELECT * FROM address WHERE AddressID=?'
 			job_qry = 'SELECT * FROM job_title WHERE JobTitleID=?'
 			fed_qry = 'SELECT * FROM fed_tax_rate WHERE FedTaxRateID=?'
 			ben_qry = 'SELECT * FROM employee_benefits WHERE EmployeeBenefitsID=?'
-			address = db.execute(address_qry, [AddressID])
-			jobtitle = db.execute(job_qry,[JobTitleID])
-			fed = db.execute(fed_qry,[FedTaxRateID])
-			ben = db.execute(ben_qry,[BenefitsID])
-			#for b in ben:
-				
-		print cur.fetchall()
+			address = db.execute(address_qry, [AddressID]).fetchall()
+			jobtitle = db.execute(job_qry,[JobTitleID]).fetchall()
+			fed = db.execute(fed_qry,[FedTaxRateID]).fetchall()
+			ben = db.execute(ben_qry,[BenefitsID]).fetchall()
+			#print ben
+			for b in ben:
+				k_id = emp[1]
+				dis_id = emp[2]
+				life_id = emp[3]
+				health_id = emp[4]
+				print k_id
+				print dis_id
+				print life_id
+				print health_id
+				k_qry =	'SELECT * FROM [401k_plan] WHERE [401kPlanID]=?'
+				dis_qry = 'SELECT * FROM disability_plan WHERE DisabilityPlanID=?'
+				life_qry = 'SELECT * FROM life_insurance_plan WHERE LifeInsPlanID=?'
+				health_qry = 'SELECT * FROM health_insurance_plan WHERE HealthInsPlanID=?'
+				kplan = db.execute(k_qry, [k_id]).fetchall()
+				displan = db.execute(dis_qry, [dis_id]).fetchall()
+				lifeplan = db.execute(life_qry, [life_id]).fetchall()
+				healthplan = db.execute(health_qry, [health_id]).fetchall()
+				print kplan
+				print displan
+				print lifeplan
+				print healthplan
 	return render_template("view_employee.html") 
 
 @app.route("/add_job_title", methods=['POST', 'GET'])

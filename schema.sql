@@ -41,7 +41,6 @@ CREATE TABLE employee(
 	FedTaxRateID INTEGER,
 	EmployeeBenefitsID INTEGER,
 	FOREIGN KEY(AddressID) REFERENCES address(AddressID),
-	-- FOREIGN KEY(WithholdingID) REFERENCES withholding(WithholdingID),
 	FOREIGN KEY(JobTitleID) REFERENCES job_title(JobTitleID),
 	FOREIGN KEY(FedTaxRateID) REFERENCES tax_rate(FedTaxRateID),
 	FOREIGN KEY(EmployeeBenefitsID) REFERENCES employee_benefits(EmployeeBenefitsID)
