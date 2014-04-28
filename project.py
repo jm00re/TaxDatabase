@@ -44,7 +44,7 @@ def add_employee():
 		City = str(request.form['City'])
 		State = str(request.form['State'])
 		ZipCode = int(request.form['ZipCode'])
-		#Benefits = str(request.form['Benefits'])
+	#	#Benefits = str(request.form['Benefits'])
 		JobTitleID = int(request.form['JobTitle'])
 		FedTaxRate = float(request.form['FedTaxRate'])
 		Upperlimit = int(request.form['Upperlimit'])
@@ -61,9 +61,8 @@ def add_employee():
 		db.execute('insert into fed_tax_rate (FedTaxRate, Upperlimit, WithholdingID) VALUES (?,?,?)', [FedTaxRate, Upperlimit, WithholdingID])
 		db.commit()
 		FedTaxRateID = db.execute('select last_insert_rowid();').fetchone()[0]
-		db.execute('INSERT INTO employee (AddressID, JobTitleID, FedTaxRateID) VALUES (?, ?, ?)', [AddressID, JobTitleID, FedTaxRateID])
-		#Add Employee
-		db.execute('insert into employee (AddressID, JobTitleID, FedTaxRateID) values (?, ?, ?)', [AddressID, JobTitleID, FedTaxRateID])
+	   #Add Employee
+		db.execute('INSERT INTO employee (FirstName, LastName, AddressID, JobTitleID, FedTaxRateID) values (?, ?, ?, ?, ?)', [FirstName, LastName, AddressID, JobTitleID, FedTaxRateID])
 		db.commit()
 	titles = db.execute('select * from job_title').fetchall()
 	plan = db.execute('select * from [401k_plan]').fetchall()
@@ -83,7 +82,34 @@ def update_employee_benefits():
 
 @app.route("/view_employee", methods=['GET', 'POST'])
 def view_employee():
-	return
+	db = get_db()
+	if request.method == 'GET':
+		match = request.args.get('match','').lower()
+		cur = db.execute('SELECT LastName FROM employee')
+		emp_qry = 'SELECT * FROM employee WHERE LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ?'
+		cur = db.execute(emp_qry, ['%'+match, match+'%', '%'+match+'%', match])
+		emp_list = cur.fetchall()
+		for emp in emp_list:
+			AddressID = emp[3]
+			JobTitleID = emp[4]
+			FedTaxRateID = emp[5]
+			BenefitsID = emp[6]
+			print AddressID
+			print JobTitleID
+			print FedTaxRateID
+			print BenefitsID
+			address_qry = 'SELECT * FROM address WHERE AddressID=?'
+			job_qry = 'SELECT * FROM job_title WHERE JobTitleID=?'
+			fed_qry = 'SELECT * FROM fed_tax_rate WHERE FedTaxRateID=?'
+			ben_qry = 'SELECT * FROM employee_benefits WHERE EmployeeBenefitsID=?'
+			address = db.execute(address_qry, [AddressID])
+			jobtitle = db.execute(job_qry,[JobTitleID])
+			fed = db.execute(fed_qry,[FedTaxRateID])
+			ben = db.execute(ben_qry,[BenefitsID])
+			#for b in ben:
+				
+		print cur.fetchall()
+	return render_template("view_employee.html") 
 
 @app.route("/add_job_title", methods=['POST', 'GET'])
 def add_job_title():

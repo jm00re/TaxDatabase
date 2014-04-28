@@ -34,6 +34,8 @@ CREATE TABLE address(
 
 CREATE TABLE employee(
 	EmployeeID INTEGER PRIMARY KEY AUTOINCREMENT,
+	FirstName TEXT,
+	LastName TEXT,
 	AddressID INTEGER,
 	JobTitleID INTEGER,
 	FedTaxRateID INTEGER,
@@ -84,7 +86,7 @@ CREATE TABLE employee_benefits(
 	DisabilityPlanID INTEGER,
 	LifeInsPlanID INTEGER,
 	HealthInsPlanID INTEGER,
-	FillingStatus TEXT,
+	FilingStatus TEXT,
 	FOREIGN KEY([401kPlanID]) REFERENCES [401k_plan]([401kPlanID]),
 	FOREIGN KEY(LifeInsPlanID) REFERENCES life_insurance_plan(LifeInsPlanID),
 	FOREIGN KEY(DisabilityPlanID) REFERENCES disability_plan(DisabilityPlanID),

@@ -1,0 +1,11 @@
+<!doctype html>
+<title>View Employee</title>
+
+<h1>View Employee</h1>
+<form action="{{ url_for('view_employee') }}" method=get class=add-entry>
+      <dl>
+        <dt>Employee Last Name:
+        <dd><input type=text size=30 name=match>
+        <dd><input type=submit value=Submit>
+      </dl>
+</form>
