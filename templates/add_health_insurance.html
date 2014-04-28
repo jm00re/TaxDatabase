@@ -1,0 +1,19 @@
+<!doctype html>
+<title>Add health insurance</title>
+
+<h1>Add health insurance</h1>
+<form action="{{ url_for('add_health_insurance') }}" method=post class=add-entry>
+      <dl>
+        <dt>Insurance Company Name:
+        <dd><input type=text size=30 name=Name>
+		<dt><textarea rows="3" cols="50" name=Description>Insert insurance plan description here.</textarea>
+		<dt>Family Rate:
+		<dd><input type=number size=30 name=FRate>
+		<dt>Single Rate:
+		<dd><input type=number size=30 name=SRate>
+		<dt>Cost Per Month:
+		<dd><input type=number size=30 name=CostPM>
+      </dl>
+	  <dd><input type=submit value=Submit>
+</form>
+</html>

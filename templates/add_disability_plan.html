@@ -1,7 +1,7 @@
 <!doctype html>
-<title>Add Disability Insurance</title>
+<title>Add Disability plan</title>
 
-<h1>Add Life Insurance</h1>
+<h1>Add Disability plan</h1>
 <form action="{{ url_for('add_disability_plan') }}" method=post class=add-entry>
       <dl>
         <dt>Insurance Company Name:
@@ -9,8 +9,7 @@
 		<dt>Plan Description:
         <dd><textarea rows="3" cols="50" name=Description>Insert disability plan description here.</textarea>
 		<dt>Per Month Cost:
-        <dd><input type=text size=15 name=PerMonth>
-		
+        <dd><input type=text size=15 name=PerMonth>		
         <dd><input type=submit value=Submit>
       </dl>
 </form>
