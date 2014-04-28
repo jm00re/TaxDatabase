@@ -144,7 +144,20 @@ def add_life_insurance():
 
 @app.route("/add_health_insurance", methods=['POST', 'GET'])
 def add_health_insurance():
-	return
+	db = get_db()
+	if request.method == 'POST':
+		Name = str(request.form['Name'])
+		Desc = str(request.form['Description'])
+		FRate = float(request.form['FRate'])
+		SRate = float(request.form['SRate'])
+		pMonth = float(request.form['CostPM'])
+		#Insert Company First 
+		db.execute('INSERT INTO insurance_company (InsuranceName) values (?)',[Name])
+		db.commit()	
+		insuranceID = db.execute('select last_insert_rowid();').fetchone()[0]
+		db.execute('INSERT INTO health_insurance_plan (InsuranceCoID,InsPlanDescription,FamilyRate,SingleRate,CostPerMonthHealthIns) values (?,?,?,?,?)',[insuranceID, Desc, FRate,SRate,pMonth])
+		db.commit()
+	return render_template("add_health_insurance.html")
 
 @app.route("/add_disability_plan", methods=['POST', 'GET'])
 def add_disability_plan():
