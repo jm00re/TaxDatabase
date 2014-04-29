@@ -108,7 +108,7 @@ def view_employee():
 			JobTitleID = emp[4]
 			FedTaxRateID = emp[5]
 			BenefitsID = emp[6]
-			print emp[1]
+			#print emp[1]
 			#print AddressID
 			#print JobTitleID
 			#print FedTaxRateID
@@ -123,14 +123,14 @@ def view_employee():
 			ben = db.execute(ben_qry,[BenefitsID]).fetchall()
 			#print ben
 			for b in ben:
-				k_id = emp[1]
-				dis_id = emp[2]
-				life_id = emp[3]
-				health_id = emp[4]
-				print k_id
-				print dis_id
-				print life_id
-				print health_id
+				k_id = b[1]
+				dis_id = b[2]
+				life_id = b[3]
+				health_id = b[4]
+				#print k_id
+				#print dis_id
+				#print life_id
+				#print health_id
 				k_qry =	'SELECT * FROM [401k_plan] WHERE [401kPlanID]=?'
 				dis_qry = 'SELECT * FROM disability_plan WHERE DisabilityPlanID=?'
 				life_qry = 'SELECT * FROM life_insurance_plan WHERE LifeInsPlanID=?'
