@@ -1,4 +1,5 @@
 import os
+import pprint
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
@@ -97,53 +98,81 @@ def update_employee_benefits():
 @app.route("/view_employee", methods=['GET', 'POST'])
 def view_employee():
 	db = get_db()
-	if request.method == 'GET':
+	employee_display_list = []
+	if request.method == 'GET' and not request.args.get('match','') == '':
 		match = request.args.get('match','').lower()
 		cur = db.execute('SELECT LastName FROM employee')
 		emp_qry = 'SELECT * FROM employee WHERE LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ?'
 		cur = db.execute(emp_qry, ['%'+match, match+'%', '%'+match+'%', match])
 		emp_list = cur.fetchall()
 		for emp in emp_list:
+			disp_emp = [] 
 			AddressID = emp[3]
 			JobTitleID = emp[4]
 			FedTaxRateID = emp[5]
 			BenefitsID = emp[6]
-			#print emp[1]
-			#print AddressID
-			#print JobTitleID
-			#print FedTaxRateID
-			#print BenefitsID
+			#Append everything to e_d_l
 			address_qry = 'SELECT * FROM address WHERE AddressID=?'
 			job_qry = 'SELECT * FROM job_title WHERE JobTitleID=?'
 			fed_qry = 'SELECT * FROM fed_tax_rate WHERE FedTaxRateID=?'
 			ben_qry = 'SELECT * FROM employee_benefits WHERE EmployeeBenefitsID=?'
-			address = db.execute(address_qry, [AddressID]).fetchall()
-			jobtitle = db.execute(job_qry,[JobTitleID]).fetchall()
-			fed = db.execute(fed_qry,[FedTaxRateID]).fetchall()
+			address = db.execute(address_qry, [AddressID]).fetchone()
+			jobtitle = db.execute(job_qry,[JobTitleID]).fetchone()
+			fed = db.execute(fed_qry,[FedTaxRateID]).fetchone()
 			ben = db.execute(ben_qry,[BenefitsID]).fetchall()
-			#print ben
+			print address
+			print jobtitle
+			print fed
+			#Emp ID, Add First and Last Name
+			#Emp ID
+			disp_emp.append(emp[0])
+			#First Name
+			disp_emp.append(emp[1])
+			#Last NAme
+			disp_emp.append(emp[2])
+			#Address 
+			#Number+Street
+			disp_emp.append(address[1])
+			#City
+			disp_emp.append(address[2])
+			#State
+			disp_emp.append(address[3])
+			#Zip
+			disp_emp.append(address[4])
+			#Job Title
+			disp_emp.append(jobtitle[1])
+			#Salary
+			disp_emp.append(jobtitle[2])
 			for b in ben:
 				k_id = b[1]
 				dis_id = b[2]
 				life_id = b[3]
 				health_id = b[4]
-				#print k_id
-				#print dis_id
-				#print life_id
-				#print health_id
 				k_qry =	'SELECT * FROM [401k_plan] WHERE [401kPlanID]=?'
 				dis_qry = 'SELECT * FROM disability_plan WHERE DisabilityPlanID=?'
 				life_qry = 'SELECT * FROM life_insurance_plan WHERE LifeInsPlanID=?'
 				health_qry = 'SELECT * FROM health_insurance_plan WHERE HealthInsPlanID=?'
-				kplan = db.execute(k_qry, [k_id]).fetchall()
-				displan = db.execute(dis_qry, [dis_id]).fetchall()
-				lifeplan = db.execute(life_qry, [life_id]).fetchall()
-				healthplan = db.execute(health_qry, [health_id]).fetchall()
-				print kplan
-				print displan
-				print lifeplan
-				print healthplan
-	return render_template("view_employee.html") 
+				kplan = db.execute(k_qry, [k_id]).fetchone()
+				displan = db.execute(dis_qry, [dis_id]).fetchone()
+				lifeplan = db.execute(life_qry, [life_id]).fetchone()
+				healthplan = db.execute(health_qry, [health_id]).fetchone()
+				ins_qry = 'SELECT * from insurance_company where InsuranceCoID=?'
+				k_ins = db.execute(ins_qry, [kplan[1]]).fetchone()
+				dis_ins = db.execute(ins_qry, [displan[1]]).fetchone()
+				life_ins = db.execute(ins_qry, [lifeplan[1]]).fetchone()
+				health_ins = db.execute(ins_qry, [healthplan[1]]).fetchone()
+				#Append ins info to list
+				disp_emp.append(kplan[0])
+				#disp_emp.append(k_ins)
+				disp_emp.append(displan[0])
+				#disp_emp.append(dis_ins)
+				disp_emp.append(lifeplan[0])
+				#disp_emp.append(life_ins)
+				disp_emp.append(healthplan[0])
+				#disp_emp.append(health_ins)
+				employee_display_list.append(disp_emp)
+	print employee_display_list
+	return render_template("view_employee.html",emps=employee_display_list) 
 
 @app.route("/add_job_title", methods=['POST', 'GET'])
 def add_job_title():

@@ -9,3 +9,19 @@
         <dd><input type=submit value=Submit>
       </dl>
 </form>
+{% for emp in emps %}
+	<dt><h1>Employee</h1>
+		<dd>Employee ID: {{emp[0]}}
+		<dd>First Name: {{emp[1]}}
+		<dd>Last Name: {{emp[2]}}
+		<dd>Address: {{emp[3]}}
+		<dd>City: {{emp[4]}}
+		<dd>State: {{emp[5]}}
+		<dd>Zip Code: {{emp[6]}}
+		<dd>Job Title: {{emp[7]}}
+		<dd>Salary: {{emp[8]}}
+		<dd>401k Plan ID: {{emp[9]}}
+		<dd>Disability Insurance Plan ID: {{emp[10]}}
+		<dd>Life Insurance Plan ID: {{emp[11]}}
+		<dd>Health Insurance Plan ID: {{emp[12]}}
+{% endfor %}
