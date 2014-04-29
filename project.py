@@ -205,7 +205,7 @@ def add_disability_plan():
 		db.execute('INSERT INTO insurance_company (InsuranceName) values (?)',[Name])
 		db.commit()
 		insuranceID = db.execute('select last_insert_rowid();').fetchone()[0]
-		db.execute('INSERT INTO disability_plan (DisabilityPlanDescription, CostPerMonthDisability) values (?,?)',[Desc,pMonth])
+		db.execute('INSERT INTO disability_plan (InsuranceCoID, DisabilityPlanDescription, CostPerMonthDisability) values (?,?,?)',[insuranceID, Desc,pMonth])
 		db.commit()
 	return render_template("add_disability_plan.html")
 
@@ -221,7 +221,7 @@ def add_401k_plan():
 		db.execute('INSERT INTO insurance_company (InsuranceName) values (?)',[Name])
 		db.commit()
 		insuranceID = db.execute('select last_insert_rowid();').fetchone()[0]
-		db.execute('INSERT INTO [401k_plan] ([401kPlanDescription],[401kPercentOfSalary]) values (?,?)',[Desc,pSalary])
+		db.execute('INSERT INTO [401k_plan] (InsuranceCoID, [401kPlanDescription],[401kPercentOfSalary]) values (?,?,?)',[insuranceID,Desc,pSalary])
 		db.commit()
 	return render_template("add_401k_plan.html")
 
