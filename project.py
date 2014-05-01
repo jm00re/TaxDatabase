@@ -357,8 +357,17 @@ def add_hours():
 	return render_template("add_hours.html", emp_list=emp_list)
 
 @app.route("/view_payroll", methods=['POST', 'GET'])
-def view_payll():
-	return
+def view_payroll():
+	db = get_db()
+	emp_list = db.execute('SELECT * FROM employee').fetchall()
+	period_list = []
+	if request.method == 'GET' and not request.args.get('emp_number','') == '':
+		ID = request.args.get('emp_number','')			
+		pp_qry = 'select PayPeriodID, StartDate, EndDate from pay_periods natural join pay_period where EmployeeID=?'
+		period_list = db.execute(pp_qry, [ID]).fetchall()
+				
+	emp_list = db.execute('SELECT * FROM employee').fetchall()
+	return render_template("view_payroll.html", emp_list=emp_list, period_list=period_list)
 
 @app.route("/add_health_insurance", methods=['POST', 'GET'])
 def add_health_insurance():
