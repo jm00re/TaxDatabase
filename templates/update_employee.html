@@ -1,0 +1,105 @@
+<!doctype html>
+<title>Update Employee</title>
+
+<h1>UPDATE EMPLOYEE</h1>
+<form action="{{ url_for('update_employee') }}" method=get class=add-entry>
+      <dl>
+        <dt>Employee Last Name:
+        <dd><input type=text size=30 name=match>
+        <dd><input type=submit value=Submit>
+      </dl>
+</form>
+
+{% for emp in emps %}
+	<form action="{{ url_for('update_employee') }}" method=post class=add-entry>
+		  <dl>
+			<dt>First Name:
+			<dd><input type=text size=30 name=FirstName value="{{ emp[1] }}">
+			<dt>Last Name:
+			<dd><input type=text size=30 name=LastName value="{{ emp[2] }}">
+			<dt>Address:
+			<dd><input type=test size=30 name=Address value="{{ emp[3] }}">
+			<dt>City:
+			<dd><input type=text size=30 name=City value="{{ emp[4] }}">
+			<dt>State:
+			<dd><select name="State"> 
+			{% for abv, state in [("AL","Alabama"), ("AK","Alaska"), ("AZ","Arizona"), ("AR","Arkansas"), ("CA","California"), ("CO","Colorado"), ("CT","Connecticut"), ("DE","Delaware"), ("DC","District Of Columbia"), ("FL","Florida"), ("GA","Georgia"), ("HI","Hawaii"), ("ID","Idaho"), ("IL","Illinois"), ("IN","Indiana"), ("IA","Iowa"), ("KS","Kansas"), ("KY","Kentucky"), ("LA","Louisiana"), ("ME","Maine"), ("MD","Maryland"), ("MA","Massachusetts"), ("MI","Michigan"), ("MN","Minnesota"), ("MS","Mississippi"), ("MO","Missouri"), ("MT","Montana"), ("NE","Nebraska"), ("NV","Nevada"), ("NH","New Hampshire"), ("NJ","New Jersey"), ("NM","New Mexico"), ("NY","New York"), ("NC","North Carolina"), ("ND","North Dakota"), ("OH","Ohio"), ("OK","Oklahoma"), ("OR","Oregon"), ("PA","Pennsylvania"), ("RI","Rhode Island"), ("SC","South Carolina"), ("SD","South Dakota"), ("TN","Tennessee"), ("TX","Texas"), ("UT","Utah"), ("VT","Vermont"), ("VA","Virginia"), ("WA","Washington"), ("WV","West Virginia"), ("WI","Wisconsin"), ("WY","Wyoming")] %}
+				{% if abv == emp[5] %}
+					<option selected="selected" value="{{ abv }}">{{ state }}</option>
+				{% else %}
+					<option value="{{ abv }}">{{ state }}</option>
+				{% endif %}
+			{% endfor %}
+				</select>
+			<dt>Zip Code:
+			<dd><input type=text size=5 name=ZipCode value="{{ emp[6] }}">
+			<dt>Job Title:
+			<dd><select name=JobTitle>
+					{% for title in titles %}
+						{% if emp[7] == title.JobTitle %}
+						<option selected="selected" value="{{ title.JobTitleID }}">{{ title.JobTitleName }} </option>
+						{% else %}
+						<option value="{{ title.JobTitleID }}">{{ title.JobTitleName }} </option>
+						{% endif %}
+					{% endfor %}
+				</select>
+			<dt>Filing Status:
+			<dd><select name=Status>
+				{% for s in ['S', 'HH', 'M'] %}
+					{% if s == emp[8] %}
+						<option selected='selected' value='{{ s }}'>{{ s }}</option>
+					{% else %}
+						<option value='{{ s }}'>{{ s }}</option>
+					{% endif %}
+				{% endfor %}
+				</select>
+			<dt>Health Insurance:
+			<dd><select name=HealthIns>
+					{% for HealthIns in HealthInsurance %}
+						{% if HealthIns.HealthInsPlanID == emp[9] %}
+						<option selected='selected' value="{{ HealthIns.HealthInsPlanID }}">{{ HealthIns.HealthInsPlanID }} </option>
+						{% else %}
+						<option value="{{ HealthIns.HealthInsPlanID }}">{{ HealthIns.HealthInsPlanID }} </option>
+						{% endif %}
+					{% endfor %}
+				</select>
+			<dt>Life Insurance:
+			<dd><select name=LifeIns>
+					{% for LifeIns in LifeInsurance %}
+						{% if LifeIns.LifeInsPlanID == emp[10] %}
+						<option selected='selected' value="{{ LifeIns.LifeInsPlanID }}">{{ LifeIns.LifeInsPlanID }} </option>
+						{% else %}
+						<option value="{{ LifeIns.LifeInsPlanID }}">{{ LifeIns.LifeInsPlanID }} </option>
+						{% endif %}
+					{% endfor %}
+				</select>
+			<dt>Disability Insurance:
+			<dd><select name=DisIns>
+					{% for DisIns in DisInsurance %}
+						{% if DisIns.DisabilityPlanID == emp[11] %}
+						<option selected='selected' value="{{DisIns.DisabilityPlanID }}">{{ DisIns.DisabilityPlanID }} </option>
+						{% else %}
+						<option value="{{DisIns.DisabilityPlanID }}">{{ DisIns.DisabilityPlanID }} </option>
+						{% endif %}
+					{% endfor %}
+				</select>
+			<dt>401k Plan:
+			<dd><select name=401kPlan>
+					{% for plan in plans %}
+					{% if plan[0] == emp[12] %}
+						<option selected='selected' value="{{plan[0]}}">{{ plan[0] }} </option>
+					{% else %}
+						<option value="{{plan[0]}}">{{ plan[0] }} </option>
+					{% endif %}
+					{% endfor %}
+				</select>
+			<dt>Federal Tax Rate:
+			<dd><input type=text name="FedTaxRate" value="{{ emp[13] }}">
+			<dt>Federal Tax Upperlimit:
+			<dd><input type=text name="Upperlimit" value="{{ emp[14] }}">
+			<dt>Federal Tax Witholding Description:
+			<dd><input type=text name="Withholding" value="{{ emp[15] }}">
+			<dd><input type=submit value=Submit>
+		  </dl>
+	</form>
+{% endfor %}

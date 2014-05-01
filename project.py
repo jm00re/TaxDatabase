@@ -80,7 +80,6 @@ def add_employee():
 		db.commit()
 	titles = db.execute('select * from job_title').fetchall()
 	plan = db.execute('select * from [401k_plan]').fetchall()
-	print plan
 	life = db.execute('select * from life_insurance_plan').fetchall()
 	health = db.execute('select * from health_insurance_plan').fetchall()
 	dis = db.execute('select * from disability_plan').fetchall()
@@ -89,14 +88,6 @@ def add_employee():
 #Employee Stuff
 @app.route("/update_employee", methods=['POST', 'GET'])
 def update_employee():
-	return 
-
-@app.route("/update_employee_benefits", methods=['POST', 'GET'])
-def update_employee_benefits():
-	return
-
-@app.route("/view_employee", methods=['GET', 'POST'])
-def view_employee():
 	db = get_db()
 	employee_display_list = []
 	if request.method == 'GET' and not request.args.get('match','') == '':
@@ -120,9 +111,143 @@ def view_employee():
 			jobtitle = db.execute(job_qry,[JobTitleID]).fetchone()
 			fed = db.execute(fed_qry,[FedTaxRateID]).fetchone()
 			ben = db.execute(ben_qry,[BenefitsID]).fetchall()
-			print address
-			print jobtitle
-			print fed
+			#Emp ID, Add First and Last Name
+			#Emp ID
+			disp_emp.append(emp[0])
+			#First Name
+			disp_emp.append(emp[1])
+			#Last NAme
+			disp_emp.append(emp[2])
+			#Address 
+			#Number+Street
+			disp_emp.append(address[1])
+			#City
+			disp_emp.append(address[2])
+			#State
+			disp_emp.append(address[3])
+			#Zip
+			disp_emp.append(address[4])
+			#Job Title
+			disp_emp.append(jobtitle[1])
+			#Salary
+			#disp_emp.append(jobtitle[2])
+			b = ben[0]
+			#status
+			disp_emp.append(b[5])
+			#for b in ben:
+			k_id = b[1]
+			dis_id = b[2]
+			life_id = b[3]
+			health_id = b[4]
+			k_qry =	'SELECT * FROM [401k_plan] WHERE [401kPlanID]=?'
+			dis_qry = 'SELECT * FROM disability_plan WHERE DisabilityPlanID=?'
+			life_qry = 'SELECT * FROM life_insurance_plan WHERE LifeInsPlanID=?'
+			health_qry = 'SELECT * FROM health_insurance_plan WHERE HealthInsPlanID=?'
+			kplan = db.execute(k_qry, [k_id]).fetchone()
+			displan = db.execute(dis_qry, [dis_id]).fetchone()
+			lifeplan = db.execute(life_qry, [life_id]).fetchone()
+			healthplan = db.execute(health_qry, [health_id]).fetchone()
+			ins_qry = 'SELECT * from insurance_company where InsuranceCoID=?'
+			k_ins = db.execute(ins_qry, [kplan[1]]).fetchone()
+			dis_ins = db.execute(ins_qry, [displan[1]]).fetchone()
+			life_ins = db.execute(ins_qry, [lifeplan[1]]).fetchone()
+			health_ins = db.execute(ins_qry, [healthplan[1]]).fetchone()
+			#Append ins info to list
+			disp_emp.append(healthplan[0])
+			disp_emp.append(lifeplan[0])
+			disp_emp.append(displan[0])
+			disp_emp.append(kplan[0])
+			#disp_emp.append(health_ins)
+			disp_emp.append(fed[3])
+			disp_emp.append(fed[1])
+			desc = db.execute('select * from Withholding where WithholdingID=?', [fed[2]])
+			desc = desc.fetchone()[1]
+			print desc
+			disp_emp.append(desc)
+			employee_display_list.append(disp_emp)
+		print employee_display_list
+	titles = db.execute('select * from job_title').fetchall()
+	plan = db.execute('select * from [401k_plan]').fetchall()
+	life = db.execute('select * from life_insurance_plan').fetchall()
+	health = db.execute('select * from health_insurance_plan').fetchall()
+	dis = db.execute('select * from disability_plan').fetchall()
+	return render_template("update_employee.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis, emps=employee_display_list) 
+
+
+	#if request.method == 'POST':
+	#	#Gather all Parameters
+	#	FirstName = str(request.form['FirstName'])
+	#	LastName = str(request.form['LastName'])
+	#	Address = str(request.form['Address'])
+	#	City = str(request.form['City'])
+	#	State = str(request.form['State'])
+	#	ZipCode = int(request.form['ZipCode'])
+	##	#Benefits = str(request.form['Benefits'])
+	#	JobTitleID = int(request.form['JobTitle'])
+	#	FedTaxRate = float(request.form['FedTaxRate'])
+	#	Upperlimit = int(request.form['Upperlimit'])
+	#	Withholding = str(request.form['Withholding'])
+	#	#Insert Address
+	#	add_addres = 'INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)'
+	#	db.execute(add_addres, [Address, City, State, ZipCode])
+	#	db.commit()
+	#	AddressID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
+	#	#Insert Tax Witholding
+	#	db.execute('INSERT INTO Withholding (Description) VALUES (?)',[Withholding])
+	#	db.commit()
+	#	WithholdingID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
+	#	#Insert Fed Tax
+	#	add_fed = 'INSERT INTO fed_tax_rate (FedTaxRate, Upperlimit, WithholdingID) VALUES (?,?,?)'
+	#	db.execute(add_fed, [FedTaxRate, Upperlimit, WithholdingID])
+	#	db.commit()
+	#	FedTaxRateID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
+	#	#Add Employee Benefits
+	#	PlanID = str(request.form['401kPlan'])
+	#	DisIns = str(request.form['DisIns'])
+	#	LifeIns = str(request.form['LifeIns'])
+	#	HealthIns = str(request.form['HealthIns'])
+	#	Status = str(request.form['Status'])
+	#	empben_qry = "INSERT INTO employee_benefits ([401kPlanID], DisabilityPlanID, LifeInsPlanID, HealthInsPlanID, FilingStatus) VALUES (?, ?, ?, ?, ?)"
+	#	db.execute(empben_qry, [PlanID, DisIns, LifeIns, HealthIns, Status])
+	#	db.commit()
+	#	EmployeeBenefitsID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
+	#    #Add Employee
+	#	emp_qry = 'INSERT INTO employee (FirstName, LastName, AddressID, JobTitleID, FedTaxRateID, EmployeeBenefitsID) values (?, ?, ?, ?, ?, ?)'
+	#	db.execute(emp_qry, [FirstName, LastName, AddressID, JobTitleID, FedTaxRateID, EmployeeBenefitsID])
+	#	db.commit()
+	#titles = db.execute('select * from job_title').fetchall()
+	#plan = db.execute('select * from [401k_plan]').fetchall()
+	#print plan
+	#life = db.execute('select * from life_insurance_plan').fetchall()
+	#health = db.execute('select * from health_insurance_plan').fetchall()
+	#dis = db.execute('select * from disability_plan').fetchall()
+	#return render_template("update_employee.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis) 
+
+@app.route("/view_employee", methods=['GET', 'POST'])
+def view_empleyee():
+	db = get_db()
+	employee_display_list = []
+	if request.method == 'GET' and not request.args.get('match','') == '':
+		match = request.args.get('match','').lower()
+		cur = db.execute('SELECT LastName FROM employee')
+		emp_qry = 'SELECT * FROM employee WHERE LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ?'
+		cur = db.execute(emp_qry, ['%'+match, match+'%', '%'+match+'%', match])
+		emp_list = cur.fetchall()
+		for emp in emp_list:
+			disp_emp = [] 
+			AddressID = emp[3]
+			JobTitleID = emp[4]
+			FedTaxRateID = emp[5]
+			BenefitsID = emp[6]
+			#Append everything to e_d_l
+			address_qry = 'SELECT * FROM address WHERE AddressID=?'
+			job_qry = 'SELECT * FROM job_title WHERE JobTitleID=?'
+			fed_qry = 'SELECT * FROM fed_tax_rate WHERE FedTaxRateID=?'
+			ben_qry = 'SELECT * FROM employee_benefits WHERE EmployeeBenefitsID=?'
+			address = db.execute(address_qry, [AddressID]).fetchone()
+			jobtitle = db.execute(job_qry,[JobTitleID]).fetchone()
+			fed = db.execute(fed_qry,[FedTaxRateID]).fetchone()
+			ben = db.execute(ben_qry,[BenefitsID]).fetchall()
 			#Emp ID, Add First and Last Name
 			#Emp ID
 			disp_emp.append(emp[0])
@@ -143,6 +268,7 @@ def view_employee():
 			disp_emp.append(jobtitle[1])
 			#Salary
 			disp_emp.append(jobtitle[2])
+			#Filing Status
 			for b in ben:
 				k_id = b[1]
 				dis_id = b[2]
@@ -170,8 +296,7 @@ def view_employee():
 				#disp_emp.append(life_ins)
 				disp_emp.append(healthplan[0])
 				#disp_emp.append(health_ins)
-				employee_display_list.append(disp_emp)
-	print employee_display_list
+			employee_display_list.append(disp_emp)
 	return render_template("view_employee.html",emps=employee_display_list) 
 
 @app.route("/add_job_title", methods=['POST', 'GET'])
@@ -257,15 +382,6 @@ def add_401k_plan():
 @app.route("/generate_w2", methods=['POST', 'GET'])
 def generate_w2():
 	return
-
-#@app.route('/add', methods=['POST'])
-#def update():
-#	db = get_db()
-#	n = request.form['name']
-#	s = int(request.form['salary'])
-#	db.execute('insert into first (NAME, SALARY) values (?, ?)', [n, s])
-#	db.commit()
-#	return redirect(url_for('show'))
 
 if __name__ == "__main__":
     app.run(debug=True)
