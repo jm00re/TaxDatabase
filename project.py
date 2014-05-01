@@ -162,66 +162,63 @@ def update_employee():
 			disp_emp.append(fed[1])
 			desc = db.execute('select * from Withholding where WithholdingID=?', [fed[2]])
 			desc = desc.fetchone()[1]
-			print desc
 			disp_emp.append(desc)
+			disp_emp.append(emp[0])
 			employee_display_list.append(disp_emp)
-		print employee_display_list
+	if request.method == 'POST':
+	#if request.method == 'POST':
+		#Gather all Parameters
+		FirstName = str(request.form['FirstName'])
+		LastName = str(request.form['LastName'])
+		Address = str(request.form['Address'])
+		City = str(request.form['City'])
+		State = str(request.form['State'])
+		ZipCode = int(request.form['ZipCode'])
+	#	#Benefits = str(request.form['Benefits'])
+		JobTitleID = int(request.form['JobTitle'])
+		FedTaxRate = float(request.form['FedTaxRate'])
+		Upperlimit = int(request.form['Upperlimit'])
+		Withholding = str(request.form['Withholding'])
+		PlanID = str(request.form['401kPlan'])
+		DisIns = str(request.form['DisIns'])
+		LifeIns = str(request.form['LifeIns'])
+		HealthIns = str(request.form['HealthIns'])
+		Status = str(request.form['Status'])
+		ID = int(request.form['ID'])
+		#Update Employee
+		update_name_qry = 'update employee set FirstName=?, LastName=?, JobTitleID=? where EmployeeID=?'
+		db.execute(update_name_qry, [FirstName, LastName, JobTitleID, ID])
+		db.commit()
+		#Update Address
+		employee_qry = 'Select * from employee where EmployeeID=?'
+		employee = db.execute(employee_qry, [ID]).fetchone()
+		print employee
+		address_id = employee[3]
+		add_addres = 'UPDATE address SET Street=?, City=?, State=?, ZipCode=? WHERE AddressID=?'
+		db.execute(add_addres, [Address, City, State, ZipCode, address_id])
+		db.commit()
+		#Update Benefits
+		emp_ben_id=employee[6]
+		emp_ben_qry = 'update employee_benefits set [401kPlanID]=?, DisabilityPlanID=?, LifeInsPlanID=?, HealthInsPlanID=?, FilingStatus=? where EmployeeBenefitsID=?'
+		db.execute(emp_ben_qry, [PlanID, DisIns, LifeIns, HealthIns, Status, emp_ben_id]).fetchone()
+		#Update Tax
+		temp = employee[5]
+		tax_id_qry = "select * from fed_tax_rate where FedTaxRateID=?"
+		fed_tax = db.execute(tax_id_qry, [temp]).fetchone()
+		with_id=fed_tax[2]
+		fed_tax_update = 'update fed_tax_rate set Upperlimit=?, FedTaxRate=? where FedTaxRateID=?'
+		if FedTaxRate > fed_tax[3]:
+			db.execute(fed_tax_update, [Upperlimit, FedTaxRate, temp])
+			db.commit()
+		withholding_qry = "update withholding set Description=? where WithholdingID=?"
+		db.execute(withholding_qry, [Withholding, with_id])
+		db.commit()
 	titles = db.execute('select * from job_title').fetchall()
 	plan = db.execute('select * from [401k_plan]').fetchall()
 	life = db.execute('select * from life_insurance_plan').fetchall()
 	health = db.execute('select * from health_insurance_plan').fetchall()
 	dis = db.execute('select * from disability_plan').fetchall()
 	return render_template("update_employee.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis, emps=employee_display_list) 
-
-
-	#if request.method == 'POST':
-	#	#Gather all Parameters
-	#	FirstName = str(request.form['FirstName'])
-	#	LastName = str(request.form['LastName'])
-	#	Address = str(request.form['Address'])
-	#	City = str(request.form['City'])
-	#	State = str(request.form['State'])
-	#	ZipCode = int(request.form['ZipCode'])
-	##	#Benefits = str(request.form['Benefits'])
-	#	JobTitleID = int(request.form['JobTitle'])
-	#	FedTaxRate = float(request.form['FedTaxRate'])
-	#	Upperlimit = int(request.form['Upperlimit'])
-	#	Withholding = str(request.form['Withholding'])
-	#	#Insert Address
-	#	add_addres = 'INSERT INTO address (Street, City, State, ZipCode) VALUES (?, ?, ?, ?)'
-	#	db.execute(add_addres, [Address, City, State, ZipCode])
-	#	db.commit()
-	#	AddressID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
-	#	#Insert Tax Witholding
-	#	db.execute('INSERT INTO Withholding (Description) VALUES (?)',[Withholding])
-	#	db.commit()
-	#	WithholdingID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
-	#	#Insert Fed Tax
-	#	add_fed = 'INSERT INTO fed_tax_rate (FedTaxRate, Upperlimit, WithholdingID) VALUES (?,?,?)'
-	#	db.execute(add_fed, [FedTaxRate, Upperlimit, WithholdingID])
-	#	db.commit()
-	#	FedTaxRateID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
-	#	#Add Employee Benefits
-	#	PlanID = str(request.form['401kPlan'])
-	#	DisIns = str(request.form['DisIns'])
-	#	LifeIns = str(request.form['LifeIns'])
-	#	HealthIns = str(request.form['HealthIns'])
-	#	Status = str(request.form['Status'])
-	#	empben_qry = "INSERT INTO employee_benefits ([401kPlanID], DisabilityPlanID, LifeInsPlanID, HealthInsPlanID, FilingStatus) VALUES (?, ?, ?, ?, ?)"
-	#	db.execute(empben_qry, [PlanID, DisIns, LifeIns, HealthIns, Status])
-	#	db.commit()
-	#	EmployeeBenefitsID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
-	#    #Add Employee
-	#	emp_qry = 'INSERT INTO employee (FirstName, LastName, AddressID, JobTitleID, FedTaxRateID, EmployeeBenefitsID) values (?, ?, ?, ?, ?, ?)'
-	#	db.execute(emp_qry, [FirstName, LastName, AddressID, JobTitleID, FedTaxRateID, EmployeeBenefitsID])
-	#	db.commit()
-	#titles = db.execute('select * from job_title').fetchall()
-	#plan = db.execute('select * from [401k_plan]').fetchall()
-	#print plan
-	#life = db.execute('select * from life_insurance_plan').fetchall()
-	#health = db.execute('select * from health_insurance_plan').fetchall()
-	#dis = db.execute('select * from disability_plan').fetchall()
-	#return render_template("update_employee.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis) 
 
 @app.route("/view_employee", methods=['GET', 'POST'])
 def view_empleyee():

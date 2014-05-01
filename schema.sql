@@ -42,7 +42,7 @@ CREATE TABLE employee(
 	EmployeeBenefitsID INTEGER,
 	FOREIGN KEY(AddressID) REFERENCES address(AddressID),
 	FOREIGN KEY(JobTitleID) REFERENCES job_title(JobTitleID),
-	FOREIGN KEY(FedTaxRateID) REFERENCES tax_rate(FedTaxRateID),
+	FOREIGN KEY(FedTaxRateID) REFERENCES fed_tax_rate(FedTaxRateID),
 	FOREIGN KEY(EmployeeBenefitsID) REFERENCES employee_benefits(EmployeeBenefitsID)
 );
 
