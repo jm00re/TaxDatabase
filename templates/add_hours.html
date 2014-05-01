@@ -1,0 +1,18 @@
+<h1>Add Hours</h1>
+
+<form action="{{ url_for('add_hours') }}" method=post class=add-entry>
+	<dt>Select Employee:
+	<dt><select type=text name=emp_number>
+			{% for e in emp_list %}
+			<option value="{{ e[0] }}">{{ e[0] }}:{{ e[1] }} {{ e[2] }}</option>
+			{% endfor%}
+	</select>
+	<!-- For loop  here --> 
+	<dt>Start Date:
+	<dt><input type=date name=start>
+	<dt>End Date:
+	<dt><input type=date name=end>
+	<dt>Number of Hours:
+	<dt><input type=number name=hours>
+	<dt><input type=submit value=Submit>
+</form>

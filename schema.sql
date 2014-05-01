@@ -46,9 +46,17 @@ CREATE TABLE employee(
 	FOREIGN KEY(EmployeeBenefitsID) REFERENCES employee_benefits(EmployeeBenefitsID)
 );
 
-CREATE TABLE payroll(
-	PayrollEmpID INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE pay_periods(
+	PayPeriodsID INTEGER PRIMARY KEY AUTOINCREMENT,
+	PayRollID INTEGER,
 	PayPeriodID INTEGER,
+	FOREIGN KEY(PayRollID) REFERENCES payroll(PayRollID),
+	FOREIGN KEY(PayPeriodID) REFERENCES pay_period(PayPeriodID)
+);
+
+CREATE TABLE payroll(
+	PayrollID INTEGER PRIMARY KEY AUTOINCREMENT,
+	PayPeriodsID INTEGER,
 	EmployeeID INTEGER,
 	LocalTax REAL,
 	CityTax REAL,
@@ -62,7 +70,7 @@ CREATE TABLE payroll(
 	HealthInsuranceAmt REAL,
 	GrossSalary REAL,
 	FOREIGN KEY(EmployeeID) REFERENCES employee(EmployeeID), 
-	FOREIGN KEY(PayPeriodID) REFERENCES pay_period(PayPeriodID) 
+	FOREIGN KEY(PayPeriodsID) REFERENCES pay_periods(PayPeriodsID) 
 );
 
 CREATE TABLE job_title(

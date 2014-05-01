@@ -221,7 +221,7 @@ def update_employee():
 	return render_template("update_employee.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis, emps=employee_display_list) 
 
 @app.route("/view_employee", methods=['GET', 'POST'])
-def view_empleyee():
+def view_employee():
 	db = get_db()
 	employee_display_list = []
 	if request.method == 'GET' and not request.args.get('match','') == '':
@@ -264,37 +264,47 @@ def view_empleyee():
 			#Job Title
 			disp_emp.append(jobtitle[1])
 			#Salary
-			disp_emp.append(jobtitle[2])
-			#Filing Status
-			for b in ben:
-				k_id = b[1]
-				dis_id = b[2]
-				life_id = b[3]
-				health_id = b[4]
-				k_qry =	'SELECT * FROM [401k_plan] WHERE [401kPlanID]=?'
-				dis_qry = 'SELECT * FROM disability_plan WHERE DisabilityPlanID=?'
-				life_qry = 'SELECT * FROM life_insurance_plan WHERE LifeInsPlanID=?'
-				health_qry = 'SELECT * FROM health_insurance_plan WHERE HealthInsPlanID=?'
-				kplan = db.execute(k_qry, [k_id]).fetchone()
-				displan = db.execute(dis_qry, [dis_id]).fetchone()
-				lifeplan = db.execute(life_qry, [life_id]).fetchone()
-				healthplan = db.execute(health_qry, [health_id]).fetchone()
-				ins_qry = 'SELECT * from insurance_company where InsuranceCoID=?'
-				k_ins = db.execute(ins_qry, [kplan[1]]).fetchone()
-				dis_ins = db.execute(ins_qry, [displan[1]]).fetchone()
-				life_ins = db.execute(ins_qry, [lifeplan[1]]).fetchone()
-				health_ins = db.execute(ins_qry, [healthplan[1]]).fetchone()
-				#Append ins info to list
-				disp_emp.append(kplan[0])
-				#disp_emp.append(k_ins)
-				disp_emp.append(displan[0])
-				#disp_emp.append(dis_ins)
-				disp_emp.append(lifeplan[0])
-				#disp_emp.append(life_ins)
-				disp_emp.append(healthplan[0])
-				#disp_emp.append(health_ins)
+			#disp_emp.append(jobtitle[2])
+			b = ben[0]
+			#status
+			disp_emp.append(b[5])
+			#for b in ben:
+			k_id = b[1]
+			dis_id = b[2]
+			life_id = b[3]
+			health_id = b[4]
+			k_qry =	'SELECT * FROM [401k_plan] WHERE [401kPlanID]=?'
+			dis_qry = 'SELECT * FROM disability_plan WHERE DisabilityPlanID=?'
+			life_qry = 'SELECT * FROM life_insurance_plan WHERE LifeInsPlanID=?'
+			health_qry = 'SELECT * FROM health_insurance_plan WHERE HealthInsPlanID=?'
+			kplan = db.execute(k_qry, [k_id]).fetchone()
+			displan = db.execute(dis_qry, [dis_id]).fetchone()
+			lifeplan = db.execute(life_qry, [life_id]).fetchone()
+			healthplan = db.execute(health_qry, [health_id]).fetchone()
+			ins_qry = 'SELECT * from insurance_company where InsuranceCoID=?'
+			k_ins = db.execute(ins_qry, [kplan[1]]).fetchone()
+			dis_ins = db.execute(ins_qry, [displan[1]]).fetchone()
+			life_ins = db.execute(ins_qry, [lifeplan[1]]).fetchone()
+			health_ins = db.execute(ins_qry, [healthplan[1]]).fetchone()
+			#Append ins info to list
+			disp_emp.append(healthplan[0])
+			disp_emp.append(lifeplan[0])
+			disp_emp.append(displan[0])
+			disp_emp.append(kplan[0])
+			#disp_emp.append(health_ins)
+			disp_emp.append(fed[3])
+			disp_emp.append(fed[1])
+			desc = db.execute('select * from Withholding where WithholdingID=?', [fed[2]])
+			desc = desc.fetchone()[1]
+			disp_emp.append(desc)
+			disp_emp.append(emp[0])
 			employee_display_list.append(disp_emp)
-	return render_template("view_employee.html",emps=employee_display_list) 
+	titles = db.execute('select * from job_title').fetchall()
+	plan = db.execute('select * from [401k_plan]').fetchall()
+	life = db.execute('select * from life_insurance_plan').fetchall()
+	health = db.execute('select * from health_insurance_plan').fetchall()
+	dis = db.execute('select * from disability_plan').fetchall()
+	return render_template("view_employee.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis, emps=employee_display_list) 
 
 @app.route("/add_job_title", methods=['POST', 'GET'])
 def add_job_title():
@@ -327,6 +337,14 @@ def add_life_insurance():
 		db.commit()
 	return render_template("add_life_insurance.html")
 
+@app.route("/add_hours", methods=['POST', 'GET'])
+def add_hours():
+	db = get_db()
+	if request.method == 'POST':
+		print "hey"
+	emp_list = db.execute('SELECT * FROM employee').fetchall()
+	return render_template("add_hours.html", emp_list=emp_list)
+		
 @app.route("/add_health_insurance", methods=['POST', 'GET'])
 def add_health_insurance():
 	db = get_db()
