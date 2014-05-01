@@ -64,6 +64,7 @@ def add_employee():
 		db.execute(add_fed, [FedTaxRate, Upperlimit, WithholdingID])
 		db.commit()
 		FedTaxRateID = db.execute('SELECT last_insert_rowid();').fetchone()[0]
+		#Add payroll
 		#Add Employee Benefits
 		PlanID = str(request.form['401kPlan'])
 		DisIns = str(request.form['DisIns'])
@@ -341,10 +342,24 @@ def add_life_insurance():
 def add_hours():
 	db = get_db()
 	if request.method == 'POST':
-		print "hey"
+		start = str(request.form['start'])
+		end = str(request.form['end'])
+		hours = int(request.form['hours'])
+		ID = int(request.form['emp_number'])
+		hour_qry= 'INSERT INTO pay_period ( StartDate, EndDate, Hours) VALUES (?, ?, ?)'
+		db.execute(hour_qry, [start, end, hours])
+		db.commit()
+		ppID = db.execute('select last_insert_rowid();').fetchone()[0]
+		periods_qry = 'insert into pay_periods (EmployeeID, PayPeriodID) VALUES (?, ?)'
+		db.execute(periods_qry, [ID, ppID])
+		db.commit()
 	emp_list = db.execute('SELECT * FROM employee').fetchall()
 	return render_template("add_hours.html", emp_list=emp_list)
-		
+
+@app.route("/view_payroll", methods=['POST', 'GET'])
+def view_payll():
+	return
+
 @app.route("/add_health_insurance", methods=['POST', 'GET'])
 def add_health_insurance():
 	db = get_db()

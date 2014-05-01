@@ -8,7 +8,8 @@ CREATE TABLE insurance_company(
 CREATE TABLE pay_period(
 	PayPeriodID INTEGER PRIMARY KEY AUTOINCREMENT,
 	StartDate DATE,
-	EndDate DATE
+	EndDate DATE,
+	Hours INTEGER
 );
 
 CREATE TABLE withholding(
@@ -40,18 +41,20 @@ CREATE TABLE employee(
 	JobTitleID INTEGER,
 	FedTaxRateID INTEGER,
 	EmployeeBenefitsID INTEGER,
+	-- PayPeriodsID INTEGER,
 	FOREIGN KEY(AddressID) REFERENCES address(AddressID),
 	FOREIGN KEY(JobTitleID) REFERENCES job_title(JobTitleID),
 	FOREIGN KEY(FedTaxRateID) REFERENCES fed_tax_rate(FedTaxRateID),
 	FOREIGN KEY(EmployeeBenefitsID) REFERENCES employee_benefits(EmployeeBenefitsID)
+	-- FOREIGN KEY(PayPeriodsID) REFERENCES PayPeriodID(PayPeriodsID))
 );
 
 CREATE TABLE pay_periods(
 	PayPeriodsID INTEGER PRIMARY KEY AUTOINCREMENT,
-	PayRollID INTEGER,
+	EmployeeID INTEGER,
 	PayPeriodID INTEGER,
-	FOREIGN KEY(PayRollID) REFERENCES payroll(PayRollID),
-	FOREIGN KEY(PayPeriodID) REFERENCES pay_period(PayPeriodID)
+	FOREIGN KEY(PayPeriodID) REFERENCES pay_periods(PayPeriodID),
+	FOREIGN KEY(EmployeeID) REFERENCES employee(EmployeeID)
 );
 
 CREATE TABLE payroll(
