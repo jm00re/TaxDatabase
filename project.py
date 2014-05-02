@@ -361,13 +361,158 @@ def view_payroll():
 	db = get_db()
 	emp_list = db.execute('SELECT * FROM employee').fetchall()
 	period_list = []
+	display_list = []
+	pp_info = []
+	pp1_info = []
+	ID = 0
+	pp_id = 0
 	if request.method == 'GET' and not request.args.get('emp_number','') == '':
 		ID = request.args.get('emp_number','')			
-		pp_qry = 'select PayPeriodID, StartDate, EndDate from pay_periods natural join pay_period where EmployeeID=?'
+		pp_qry = 'select PayPeriodID, StartDate, EndDate, Hours from pay_periods natural join pay_period where EmployeeID=?'
 		period_list = db.execute(pp_qry, [ID]).fetchall()
-				
+		salary = db.execute('select JobTitleSalary from employee natural join job_title where EmployeeID=?', [ID]).fetchone()
+	if request.method == 'GET' and not request.args.get('pp_id','') == '':
+		ID = request.args.get('emp_number','')			
+		salary = db.execute('select JobTitleSalary from employee natural join job_title where EmployeeID=?', [ID]).fetchone()
+		pp_id = request.args.get('pp_id','')
+		hours = db.execute('select Hours from pay_period where PayPeriodID=?', [pp_id]).fetchone()[0]
+		#Hours in pay period
+		week_gross_salary = (salary[0] / 2087)*hours
+		hours_list = db.execute('select Hours from pay_period natural join pay_periods where EmployeeID=?', [ID]).fetchall()
+		#Total Hours
+		hours_to_date = 0
+		for i in hours_list:
+			hours_to_date += i[0]
+		#Find 401k Percent of salary
+		plan_qry = 'select [401kPercentOfSalary] from employee natural join employee_benefits natural join [401k_plan] where EmployeeID=?'
+		plan = db.execute(plan_qry, [ID]).fetchone()[0]
+		#Find Disability Insurance Cost
+		dis_qry = 'select CostPerMonthDisability from employee natural join employee_benefits natural join disability_plan where EmployeeID=?'
+		dis = db.execute(dis_qry, [ID]).fetchone()[0]
+		#Life Insurance Amount
+		life_qry = 'select CostPerMonthLifeIns from employee natural join employee_benefits natural join life_insurance_plan where EmployeeID=?'
+		life = db.execute(life_qry, [ID]).fetchone()[0]
+		#Health Insurance Amount
+		health_qry = 'select CostPerMonthHealthIns from employee natural join employee_benefits natural join health_insurance_plan where EmployeeID=?'
+		health = db.execute(health_qry, [ID]).fetchone()[0]
+		#Fed Tax Arount
+		tax_qry = 'select FedTaxRate from employee natural join fed_tax_rate where EmployeeID=?'
+		fed = db.execute(tax_qry, [ID]).fetchone()[0]
+		numb_qry = 'select count(*) from pay_period natural join pay_periods where EmployeeID=?'
+		num_pay_periods = db.execute(numb_qry, [ID]).fetchone()[0]
+		city = .02
+		state = .03
+		local = .01
+		medicare = .01
+		ss = .015
+		unemployment = .005
+		avg_hours_per_year = 2087
+		#display list
+		#pp_info = []
+		#Pay Period deduc
+		fed_deduc = week_gross_salary*(fed/100)
+		plan_deduc = (plan/100)*week_gross_salary
+		dis_deduc = dis
+		life_deduc = life
+		health_deduc = health
+		city_deduc = week_gross_salary*city
+		state_deduc = week_gross_salary*state
+		local_deduc = week_gross_salary*local
+		medicare_deduc = week_gross_salary*medicare
+		ss_deduc = week_gross_salary*ss
+		unemployment_deduc = week_gross_salary*unemployment
+		netpay = week_gross_salary
+		pp_info.append(netpay)
+		deduc_total = 0
+		tax_total = 0 
+		netpay -= fed_deduc
+		netpay -= plan_deduc
+		netpay -= dis_deduc
+		netpay -= life_deduc
+		netpay -= health_deduc
+		netpay -= city_deduc
+		netpay -= local_deduc
+		netpay -= state_deduc
+		netpay -= medicare_deduc
+		netpay -= ss_deduc
+		netpay -= unemployment_deduc
+		deduc_total += plan_deduc
+		deduc_total += dis_deduc
+		deduc_total += life_deduc
+		deduc_total += health_deduc
+
+		tax_total += fed_deduc
+		tax_total += city_deduc
+		tax_total += local_deduc
+		tax_total += medicare_deduc
+		tax_total += ss_deduc
+		tax_total += unemployment_deduc
+		tax_total += state_deduc
+
+		#Display stuff
+		pp_info.append(netpay)
+		pp_info.append(deduc_total)
+		pp_info.append(plan_deduc)
+		pp_info.append(health_deduc)
+		pp_info.append(life_deduc)
+		pp_info.append(dis_deduc)
+
+		pp_info.append(tax_total)
+		pp_info.append(fed_deduc)
+		pp_info.append(state_deduc)
+		pp_info.append(city_deduc)
+		pp_info.append(local_deduc)
+		pp_info.append(ss_deduc)
+		pp_info.append(medicare_deduc)
+		pp_info.append(unemployment_deduc)
+
+		#Total Period deduc
+
+		total_gross_salary = (salary[0] / 2087)*hours_to_date
+		total_fed_deduc = total_gross_salary*(fed/100)
+		total_plan_deduc = total_gross_salary*(plan/100)
+		total_dis_deduc = num_pay_periods*dis
+		total_life_deduc = num_pay_periods*life
+		total_health_deduc = num_pay_periods*health
+		total_city_deduc = total_gross_salary*city
+		total_local_deduc = total_gross_salary*local
+		total_medicare_deduc = total_gross_salary*medicare
+		total_ss_deduc = total_gross_salary*ss
+		total_unemployment_deduc = total_gross_salary*unemployment
+
+		#pp1_info = []
+		grosspay = (salary[0] / 2087) * hours_to_date
+		pp1_info.append(grosspay)
+		grosspay -= total_fed_deduc
+		grosspay -= total_plan_deduc
+		grosspay -= total_dis_deduc
+		grosspay -= total_life_deduc
+		grosspay -= total_health_deduc
+		grosspay -= total_city_deduc
+		grosspay -= total_local_deduc
+		grosspay -= total_medicare_deduc
+		grosspay -= total_ss_deduc
+		grosspay -= total_unemployment_deduc
+
+		pp1_info.append(grosspay)
+		pp1_info.append(deduc_total)
+		pp1_info.append(plan_deduc)
+		pp1_info.append(health_deduc)
+		pp1_info.append(life_deduc)
+		pp1_info.append(dis_deduc)
+		pp1_info.append(tax_total)
+		pp1_info.append(fed_deduc)
+		pp1_info.append(state_deduc)
+		pp1_info.append(city_deduc)
+		pp1_info.append(local_deduc)
+		pp1_info.append(ss_deduc)
+		pp1_info.append(medicare_deduc)
+		pp1_info.append(unemployment_deduc)
+
 	emp_list = db.execute('SELECT * FROM employee').fetchall()
-	return render_template("view_payroll.html", emp_list=emp_list, period_list=period_list)
+	ID = int(ID)
+	pp_id = int(pp_id)
+	return render_template("view_payroll.html", emp_list=emp_list, period_list=period_list, pp_info=pp_info, pp1_info=pp1_info, ID=ID, pp_id=pp_id)
 
 @app.route("/add_health_insurance", methods=['POST', 'GET'])
 def add_health_insurance():
@@ -420,91 +565,7 @@ def add_401k_plan():
 
 @app.route("/generate_w2", methods=['POST', 'GET'])
 def generate_w2():
-	db = get_db()
-	employee_display_list = []
-	if request.method == 'GET' and not request.args.get('match','') == '':
-		match = request.args.get('match','').lower()
-		cur = db.execute('SELECT LastName FROM employee')
-		emp_qry = 'SELECT * FROM employee WHERE LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ?'
-		cur = db.execute(emp_qry, ['%'+match, match+'%', '%'+match+'%', match])
-		emp_list = cur.fetchall()
-		for emp in emp_list:
-			disp_emp = [] 
-			AddressID = emp[3]
-			JobTitleID = emp[4]
-			FedTaxRateID = emp[5]
-			BenefitsID = emp[6]
-			#Append everything to e_d_l
-			address_qry = 'SELECT * FROM address WHERE AddressID=?'
-			job_qry = 'SELECT * FROM job_title WHERE JobTitleID=?'
-			fed_qry = 'SELECT * FROM fed_tax_rate WHERE FedTaxRateID=?'
-			ben_qry = 'SELECT * FROM employee_benefits WHERE EmployeeBenefitsID=?'
-			address = db.execute(address_qry, [AddressID]).fetchone()
-			jobtitle = db.execute(job_qry,[JobTitleID]).fetchone()
-			fed = db.execute(fed_qry,[FedTaxRateID]).fetchone()
-			ben = db.execute(ben_qry,[BenefitsID]).fetchall()
-			#Emp ID, Add First and Last Name
-			#Emp ID
-			disp_emp.append(emp[0])
-			#First Name
-			disp_emp.append(emp[1])
-			#Last NAme
-			disp_emp.append(emp[2])
-			#Address 
-			#Number+Street
-			disp_emp.append(address[1])
-			#City
-			disp_emp.append(address[2])
-			#State
-			disp_emp.append(address[3])
-			#Zip
-			disp_emp.append(address[4])
-			#Job Title
-			disp_emp.append(jobtitle[1])
-			#Salary
-			#disp_emp.append(jobtitle[2])
-			b = ben[0]
-			#status
-			disp_emp.append(b[5])
-			#for b in ben:
-			k_id = b[1]
-			dis_id = b[2]
-			life_id = b[3]
-			health_id = b[4]
-			k_qry =	'SELECT * FROM [401k_plan] WHERE [401kPlanID]=?'
-			dis_qry = 'SELECT * FROM disability_plan WHERE DisabilityPlanID=?'
-			life_qry = 'SELECT * FROM life_insurance_plan WHERE LifeInsPlanID=?'
-			health_qry = 'SELECT * FROM health_insurance_plan WHERE HealthInsPlanID=?'
-			kplan = db.execute(k_qry, [k_id]).fetchone()
-			displan = db.execute(dis_qry, [dis_id]).fetchone()
-			lifeplan = db.execute(life_qry, [life_id]).fetchone()
-			healthplan = db.execute(health_qry, [health_id]).fetchone()
-			ins_qry = 'SELECT * from insurance_company where InsuranceCoID=?'
-			k_ins = db.execute(ins_qry, [kplan[1]]).fetchone()
-			dis_ins = db.execute(ins_qry, [displan[1]]).fetchone()
-			life_ins = db.execute(ins_qry, [lifeplan[1]]).fetchone()
-			health_ins = db.execute(ins_qry, [healthplan[1]]).fetchone()
-			#Append ins info to list
-			disp_emp.append(healthplan[0])
-			disp_emp.append(lifeplan[0])
-			disp_emp.append(displan[0])
-			disp_emp.append(kplan[0])
-			#disp_emp.append(health_ins)
-			disp_emp.append(fed[3])
-			disp_emp.append(fed[1])
-			desc = db.execute('select * from Withholding where WithholdingID=?', [fed[2]])
-			desc = desc.fetchone()[1]
-			disp_emp.append(desc)
-			disp_emp.append(emp[0])
-			employee_display_list.append(disp_emp)
-	titles = db.execute('select * from job_title').fetchall()
-	plan = db.execute('select * from [401k_plan]').fetchall()
-	life = db.execute('select * from life_insurance_plan').fetchall()
-	health = db.execute('select * from health_insurance_plan').fetchall()
-	dis = db.execute('select * from disability_plan').fetchall()
-			
-		
-	return render_template("generate_w2.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis, emps=employee_display_list) 
+	return
 
 if __name__ == "__main__":
     app.run(debug=True)
