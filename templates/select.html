@@ -1,16 +1,58 @@
-<h1>Select an Action</h1>
+<!doctype html>
+<title>Admin Panel</title>
+
+<head>
+<style>
+
+body{font-family:Monospace; font-size:16px; font-weight:bold;}
+h1{font-size:40px;}
+h2{font-size:22px;}
+a{text-decoration:none;}
+</style>
+</head>
+
+<html>
+<center>
+<body> 
+
+
+<h1>Admin Panel</h1>
+<hr>
+
+
 <h2>Employee Actions</h2>
-<a href="{{ url_for('add_employee') }}">Add Employee</a><br>
-<a href="{{ url_for('update_employee') }}">Update Employee</a><br>
-<a href="{{ url_for('view_employee') }}">View Employee</a><br>
-<a href="{{ url_for('add_job_title') }}">Add Job Title</a><br>
-<a href="{{ url_for('employee_payroll') }}">Employee Payroll</a><br>
-<a href="{{ url_for('generate_w2') }}">Generate W2</a><br>
-<a href="{{ url_for('add_hours') }}">Add Hours</a><br>
-<a href="{{ url_for('view_payroll') }}">View Payroll</a><br>
+<hr>
+<table border="5" style="width:600px;text-align:center;">
+<tr>
+	<td><a href="{{ url_for('add_employee') }}">Add Employee</a><br></td>
+	<td><a href="{{ url_for('update_employee') }}">Update Employee</a><br></td>
+</tr>
+<tr>
+	<td><a href="{{ url_for('view_employee') }}">View Employee</a><br></td>
+	<td><a href="{{ url_for('add_job_title') }}">Add Job Title</a><br></td>
+</tr>
+<tr>
+	<td><a href="{{ url_for('employee_payroll') }}">Employee Payroll</a><br></td>
+	<td><a href="{{ url_for('generate_w2') }}">Generate W2</a><br></td>
+</tr>
+<tr>
+	<td><a href="{{ url_for('add_hours') }}">Add Hours</a><br></td>
+	<td><a href="{{ url_for('view_payroll') }}">View Payroll</a><br></td>
+</tr>
+</table>
+
 
 <h2>Insurance Actions</h2>
-<a href="{{ url_for('add_life_insurance') }}">Add Life Insurance Plan</a><br>
-<a href="{{ url_for('add_health_insurance') }}">Add Health Insurance Plan</a><br>
-<a href="{{ url_for('add_disability_plan') }}">Add Disability Plan</a><br>
-<a href="{{ url_for('add_401k_plan') }}">Add 401k Plan</a><br>
+<hr>
+<table border="5" style="width:600px;text-align:center;">
+<tr>
+	<td><a href="{{ url_for('add_life_insurance') }}">Add Life Insurance Plan</a><br>
+	<td><a href="{{ url_for('add_health_insurance') }}">Add Health Insurance Plan</a><br>
+</tr>
+<tr>
+	<td><a href="{{ url_for('add_disability_plan') }}">Add Disability Plan</a><br></td>
+	<td><a href="{{ url_for('add_401k_plan') }}">Add 401k Plan</a><br></td>
+</tr>
+</center>
+</body>
+</html>
