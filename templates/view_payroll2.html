@@ -1,0 +1,60 @@
+<h1>View Payroll</h1>
+
+<form action="{{ url_for('view_payroll') }}" method=get class=add-entry>
+	<dt>Select Employee:
+	<dt><select type=text name=emp_number>
+			{% for e in emp_list %}
+				{% if ID == e[0] %}
+					<option selected="selected" value="{{ e[0] }}">{{ e[0] }}:{{ e[1] }} {{ e[2] }}</option>
+
+				{% else %}
+					<option value="{{ e[0] }}">{{ e[0] }}:{{ e[1] }} {{ e[2] }}</option>
+				{% endif %}
+			{% endfor%}
+	</select>
+
+	<dt>Select Pay Period:
+	<dt><select type=text name=pp_id>
+			{% for e in period_list %}
+			{% if pp_id == e[0] %}
+			<option selected="selected" value="{{ e[0] }}">{{ e[0] }}:{{ e[1] }} TO {{ e[2] }}</option>
+			{% else %}
+			<option value="{{ e[0] }}">{{ e[0] }}:{{ e[1] }} TO {{ e[2] }}</option>
+			{% endif %}
+			{% endfor%}
+	</select>
+	<dt><input type=submit value=Submit>
+</form>
+<dt>Pay Period Information
+<dd>Gross Pay: {{"{0:.2f}".format(pp_info[0])}}
+<dd>Net Pay: {{ "{0:.2f}".format(pp_info[1]) }}
+<dd>Deduction Total: {{ "{0:.2f}".format(pp_info[2]) }}
+<dd>401k Plan Deduction: {{"{0:.2f}".format(pp_info[3]) }}
+<dd>Health Insurance Deduction: {{ pp_info[4] }}
+<dd>Life Insurance Deduction: {{ pp_info[5] }}
+<dd>Disability Insurance Deduction: {{ pp_info[6] }}
+<dd>Tax Total: {{ "{0:.2f}".format(pp_info[7]) }}
+<dd>Fed Tax: {{ "{0:.2f}".format(pp_info[8]) }}
+<dd>State Tax: {{ "{0:.2f}".format(pp_info[9]) }}
+<dd>City Tax: {{ "{0:.2f}".format(pp_info[10]) }}
+<dd>Local Tax: {{ "{0:.2f}".format(pp_info[11]) }}
+<dd>Social Security Tax: {{ "{0:.2f}".format(pp_info[12]) }}
+<dd>Medicare Tax: {{ "{0:.2f}".format(pp_info[13]) }}
+<dd>Unemployment Tax: {{ "{0:.2f}".format(pp_info[14]) }}
+
+<dt>To Date Information
+<dd>Gross Pay: {{ "{0:.2f}".format(pp1_info[0]) }}
+<dd>Net Pay: {{ "{0:.2f}".format(pp1_info[1]) }}
+<dd>Deduction Total: {{ "{0:.2f}".format(pp1_info[2]) }}
+<dd>401k Plan Deduction: {{ "{0:.2f}".format(pp1_info[3]) }}
+<dd>Health Insurance Deduction: {{ pp1_info[4] }}
+<dd>Life Insurance Deduction: {{ pp1_info[5] }}
+<dd>Disability Insurance Deduction: {{ pp1_info[6] }}
+<dd>Tax Total: {{ "{0:.2f}".format(pp1_info[7])}}
+<dd>Fed Tax: {{ "{0:.2f}".format(pp1_info[8]) }}
+<dd>State Tax: {{ "{0:.2f}".format(pp1_info[9]) }}
+<dd>City Tax: {{ "{0:.2f}".format(pp1_info[10]) }}
+<dd>Local Tax: {{ "{0:.2f}".format(pp1_info[11]) }}
+<dd>Social Security Tax: {{ "{0:.2f}".format(pp1_info[12]) }}
+<dd>Medicare Tax: {{ "{0:.2f}".format(pp1_info[13]) }}
+<dd>Unemployment Tax: {{ "{0:.2f}".format(pp1_info[14]) }}
