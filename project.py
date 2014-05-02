@@ -422,7 +422,7 @@ def view_payroll():
 		ss_deduc = week_gross_salary*ss
 		unemployment_deduc = week_gross_salary*unemployment
 		netpay = week_gross_salary
-		pp_info.append(netpay)
+		pp_info.append('%.2f' % netpay)
 		deduc_total = 0
 		tax_total = 0 
 		netpay -= fed_deduc
@@ -450,21 +450,20 @@ def view_payroll():
 		tax_total += state_deduc
 
 		#Display stuff
-		pp_info.append(netpay)
-		pp_info.append(deduc_total)
-		pp_info.append(plan_deduc)
-		pp_info.append(health_deduc)
-		pp_info.append(life_deduc)
-		pp_info.append(dis_deduc)
-
-		pp_info.append(tax_total)
-		pp_info.append(fed_deduc)
-		pp_info.append(state_deduc)
-		pp_info.append(city_deduc)
-		pp_info.append(local_deduc)
-		pp_info.append(ss_deduc)
-		pp_info.append(medicare_deduc)
-		pp_info.append(unemployment_deduc)
+		pp_info.append('%.2f' % netpay)
+		pp_info.append('%.2f' % deduc_total)
+		pp_info.append('%.2f' % plan_deduc)
+		pp_info.append('%.2f' % health_deduc)
+		pp_info.append('%.2f' % life_deduc)
+		pp_info.append('%.2f' % dis_deduc)
+		pp_info.append('%.2f' % tax_total)
+		pp_info.append('%.2f' % fed_deduc)
+		pp_info.append('%.2f' % state_deduc)
+		pp_info.append('%.2f' % city_deduc)
+		pp_info.append('%.2f' % local_deduc)
+		pp_info.append('%.2f' % ss_deduc)
+		pp_info.append('%.2f' % medicare_deduc)
+		pp_info.append('%.2f' % unemployment_deduc)
 
 		#Total Period deduc
 
@@ -482,7 +481,7 @@ def view_payroll():
 
 		#pp1_info = []
 		grosspay = (salary[0] / 2087) * hours_to_date
-		pp1_info.append(grosspay)
+		pp1_info.append('%.2f' % (grosspay))
 		grosspay -= total_fed_deduc
 		grosspay -= total_plan_deduc
 		grosspay -= total_dis_deduc
@@ -494,20 +493,20 @@ def view_payroll():
 		grosspay -= total_ss_deduc
 		grosspay -= total_unemployment_deduc
 
-		pp1_info.append(grosspay)
-		pp1_info.append(deduc_total)
-		pp1_info.append(plan_deduc)
-		pp1_info.append(health_deduc)
-		pp1_info.append(life_deduc)
-		pp1_info.append(dis_deduc)
-		pp1_info.append(tax_total)
-		pp1_info.append(fed_deduc)
-		pp1_info.append(state_deduc)
-		pp1_info.append(city_deduc)
-		pp1_info.append(local_deduc)
-		pp1_info.append(ss_deduc)
-		pp1_info.append(medicare_deduc)
-		pp1_info.append(unemployment_deduc)
+		pp1_info.append('%.2f' % grosspay)
+		pp1_info.append('%.2f' % deduc_total)
+		pp1_info.append('%.2f' % plan_deduc)
+		pp1_info.append('%.2f' % health_deduc)
+		pp1_info.append('%.2f' % life_deduc)
+		pp1_info.append('%.2f' % dis_deduc)
+		pp1_info.append('%.2f' % tax_total)
+		pp1_info.append('%.2f' % fed_deduc)
+		pp1_info.append('%.2f' % state_deduc)
+		pp1_info.append('%.2f' % city_deduc)
+		pp1_info.append('%.2f' % local_deduc)
+		pp1_info.append('%.2f' % ss_deduc)
+		pp1_info.append('%.2f' % medicare_deduc)
+		pp1_info.append('%.2f' % unemployment_deduc)
 
 	emp_list = db.execute('SELECT * FROM employee').fetchall()
 	ID = int(ID)
