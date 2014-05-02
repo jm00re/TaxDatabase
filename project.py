@@ -420,7 +420,91 @@ def add_401k_plan():
 
 @app.route("/generate_w2", methods=['POST', 'GET'])
 def generate_w2():
-	return
+	db = get_db()
+	employee_display_list = []
+	if request.method == 'GET' and not request.args.get('match','') == '':
+		match = request.args.get('match','').lower()
+		cur = db.execute('SELECT LastName FROM employee')
+		emp_qry = 'SELECT * FROM employee WHERE LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ? OR LastName LIKE ?'
+		cur = db.execute(emp_qry, ['%'+match, match+'%', '%'+match+'%', match])
+		emp_list = cur.fetchall()
+		for emp in emp_list:
+			disp_emp = [] 
+			AddressID = emp[3]
+			JobTitleID = emp[4]
+			FedTaxRateID = emp[5]
+			BenefitsID = emp[6]
+			#Append everything to e_d_l
+			address_qry = 'SELECT * FROM address WHERE AddressID=?'
+			job_qry = 'SELECT * FROM job_title WHERE JobTitleID=?'
+			fed_qry = 'SELECT * FROM fed_tax_rate WHERE FedTaxRateID=?'
+			ben_qry = 'SELECT * FROM employee_benefits WHERE EmployeeBenefitsID=?'
+			address = db.execute(address_qry, [AddressID]).fetchone()
+			jobtitle = db.execute(job_qry,[JobTitleID]).fetchone()
+			fed = db.execute(fed_qry,[FedTaxRateID]).fetchone()
+			ben = db.execute(ben_qry,[BenefitsID]).fetchall()
+			#Emp ID, Add First and Last Name
+			#Emp ID
+			disp_emp.append(emp[0])
+			#First Name
+			disp_emp.append(emp[1])
+			#Last NAme
+			disp_emp.append(emp[2])
+			#Address 
+			#Number+Street
+			disp_emp.append(address[1])
+			#City
+			disp_emp.append(address[2])
+			#State
+			disp_emp.append(address[3])
+			#Zip
+			disp_emp.append(address[4])
+			#Job Title
+			disp_emp.append(jobtitle[1])
+			#Salary
+			#disp_emp.append(jobtitle[2])
+			b = ben[0]
+			#status
+			disp_emp.append(b[5])
+			#for b in ben:
+			k_id = b[1]
+			dis_id = b[2]
+			life_id = b[3]
+			health_id = b[4]
+			k_qry =	'SELECT * FROM [401k_plan] WHERE [401kPlanID]=?'
+			dis_qry = 'SELECT * FROM disability_plan WHERE DisabilityPlanID=?'
+			life_qry = 'SELECT * FROM life_insurance_plan WHERE LifeInsPlanID=?'
+			health_qry = 'SELECT * FROM health_insurance_plan WHERE HealthInsPlanID=?'
+			kplan = db.execute(k_qry, [k_id]).fetchone()
+			displan = db.execute(dis_qry, [dis_id]).fetchone()
+			lifeplan = db.execute(life_qry, [life_id]).fetchone()
+			healthplan = db.execute(health_qry, [health_id]).fetchone()
+			ins_qry = 'SELECT * from insurance_company where InsuranceCoID=?'
+			k_ins = db.execute(ins_qry, [kplan[1]]).fetchone()
+			dis_ins = db.execute(ins_qry, [displan[1]]).fetchone()
+			life_ins = db.execute(ins_qry, [lifeplan[1]]).fetchone()
+			health_ins = db.execute(ins_qry, [healthplan[1]]).fetchone()
+			#Append ins info to list
+			disp_emp.append(healthplan[0])
+			disp_emp.append(lifeplan[0])
+			disp_emp.append(displan[0])
+			disp_emp.append(kplan[0])
+			#disp_emp.append(health_ins)
+			disp_emp.append(fed[3])
+			disp_emp.append(fed[1])
+			desc = db.execute('select * from Withholding where WithholdingID=?', [fed[2]])
+			desc = desc.fetchone()[1]
+			disp_emp.append(desc)
+			disp_emp.append(emp[0])
+			employee_display_list.append(disp_emp)
+	titles = db.execute('select * from job_title').fetchall()
+	plan = db.execute('select * from [401k_plan]').fetchall()
+	life = db.execute('select * from life_insurance_plan').fetchall()
+	health = db.execute('select * from health_insurance_plan').fetchall()
+	dis = db.execute('select * from disability_plan').fetchall()
+			
+		
+	return render_template("generate_w2.html", titles=titles, plans=plan, LifeInsurance=life, HealthInsurance=health, DisInsurance=dis, emps=employee_display_list) 
 
 if __name__ == "__main__":
     app.run(debug=True)
