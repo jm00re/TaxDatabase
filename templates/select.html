@@ -32,12 +32,11 @@ a{text-decoration:none;}
 	<td><a href="{{ url_for('add_job_title') }}">Add Job Title</a><br></td>
 </tr>
 <tr>
-	<td><a href="{{ url_for('employee_payroll') }}">Employee Payroll</a><br></td>
 	<td><a href="{{ url_for('generate_w2') }}">Generate W2</a><br></td>
+	<td><a href="{{ url_for('add_hours') }}">Add Hours</a><br></td>
 </tr>
 <tr>
-	<td><a href="{{ url_for('add_hours') }}">Add Hours</a><br></td>
-	<td><a href="{{ url_for('view_payroll') }}">View Payroll</a><br></td>
+	<td colspan="2"><a href="{{ url_for('view_payroll') }}">View Payroll</a><br></td>
 </tr>
 </table>
 
